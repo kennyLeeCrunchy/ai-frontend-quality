@@ -31,6 +31,7 @@ Keep the complete directory so the skill can load its references and examples. F
 If that destination already exists, back it up or choose another path before cloning; Git will not overwrite an existing directory.
 
 ```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
 git clone https://github.com/kennyLeeCrunchy/ai-frontend-quality.git "$env:USERPROFILE\.codex\skills\ai-frontend-quality"
 ```
 
