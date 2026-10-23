@@ -1,0 +1,35 @@
+/* Project-level tokens are a starting point, not a mandate for every product. */
+:root {
+  --surface-base: #f5f6f4;
+  --surface-card: #ffffff;
+  --surface-subtle: #f0f2ef;
+  --border-subtle: rgba(37, 49, 42, 0.12);
+  --text-primary: #223329;
+  --focus-ring: #287f60;
+  --inner-radius: 8px;
+  --card-padding: 12px;
+  --outer-radius: calc(var(--inner-radius) + var(--card-padding));
+}
+
+/* One visible outline at the card boundary; hierarchy inside via spacing/surfaces. */
+.desktop-card {
+  padding: var(--card-padding);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-card);
+  border-radius: var(--outer-radius);
+  min-width: 0;
+}
+.desktop-card__content {
+  padding: 12px;
+  border-radius: var(--inner-radius);
+  background: var(--surface-subtle);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.desktop-card :is(button, a, input, textarea):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .desktop-card, .desktop-card * { scroll-behavior: auto; transition-duration: 0.01ms; animation-duration: 0.01ms; }
+}

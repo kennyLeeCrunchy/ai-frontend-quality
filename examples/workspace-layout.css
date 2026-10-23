@@ -1,0 +1,93 @@
+/*
+ * 四象限 + AI 聊天工作台参考代码，不是某个现有项目的直接补丁。
+ * HTML: .app-shell > .primary-nav + .workspace + .ai-panel
+ * .workspace > .workspace-content > .quadrants > .quadrant > .quadrant-body
+ * 语义：容器宽度决定四象限排版；视口宽度决定侧栏是否转抽屉。
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { min-width: 0; min-height: 100%; margin: 0; }
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) clamp(300px, 24vw, 400px);
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.primary-nav { min-width: 0; overflow-y: auto; }
+.workspace {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  container: workspace / inline-size;
+}
+.workspace-content {
+  width: 100%;
+  max-width: 1480px;
+  min-width: 0;
+  margin-inline: auto;
+  padding: 20px;
+}
+.quadrants {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+}
+.quadrant,
+.quadrant-body,
+.quadrant-card,
+.quadrant-card__content { min-width: 0; max-width: 100%; }
+.quadrant-card__content { white-space: normal; overflow-wrap: anywhere; }
+.quadrant-card__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.quadrant-card pre { max-width: 100%; overflow-x: auto; }
+.quadrant-card img, .quadrant-card video { display: block; max-width: 100%; height: auto; }
+.ai-panel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+.ai-panel__history {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overflow-anchor: auto;
+}
+.ai-panel__composer { min-width: 0; }
+
+/* 组件宽度而不是屏幕宽度决定何时折叠四象限 */
+@container workspace (max-width: 850px) {
+  .quadrants { grid-template-columns: minmax(0, 1fr); }
+  .workspace-content { padding: 12px; }
+}
+
+/* 页面整体变窄时，AI 从常驻侧栏切换为可打开抽屉 */
+@media (max-width: 1100px) {
+  .app-shell { grid-template-columns: 64px minmax(0, 1fr); }
+  .ai-panel {
+    position: fixed;
+    z-index: 100;
+    inset: 0 0 0 auto;
+    width: min(400px, calc(100vw - 64px));
+    background: var(--panel-bg, white);
+    box-shadow: -12px 0 32px rgba(0, 0, 0, .12);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 180ms ease, visibility 180ms;
+  }
+  .ai-panel[data-open='true'] { transform: translateX(0); visibility: visible; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-panel { transition: none; }
+}
+/* 注意：抽屉模式还需要 JS 管理 open/close、焦点、Esc、背景遮挡与锁滚动。
+ * 如果是非模态侧栏，不应该无故锁定主页面。
+ */
