@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 在开发、审查或修复 React/Vue/AI Agent 客户端、工作台、聊天界面时使用。重点处理 UI/UX 组件选型（Tooltip/Toast/Snackbar/Dialog/Drawer/Sheet）、视觉质感、文字溢出、布局跳动、滚动条挤压、响应式缩放、React 重新渲染/重挂载、局部 Loading、SSE 生成中切换对话不中断、任务/服务器/UI 状态隔离、可访问性与前端验收。需求不明确时先判定是否需向用户确认，禁止凭个人偏好擅自修改重要交互。
 metadata:
-  version: '1.1.0'
+  version: '1.2.0'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
@@ -41,6 +41,7 @@ metadata:
 - **数据的稳定身份**：列表以业务 ID 为 `key`；UI State、Server State、Task State 分离；避免旧请求覆盖新任务/新页面。
 - **输入法与滚动稳定**：组合输入阶段 Enter 不可误发；用户主动查看历史时流式输出不得抢回滚动位置；分屏折叠必须可以恢复。
 - **布局稳定**：长文不撑宽；容器有可收缩边界；传统滚动条出现时预留布局空间；高度增长可以合理滚动但不意外移动无关面板。
+- **标题层级保持克制**：避免 eyebrow、标题、副标题与辅助说明层层堆叠；只有当副标题补充了标题未表达的信息时才保留，避免重复释义或为填充版面硬加文案。详见 [visual-polish.md](references/visual-polish.md)。
 - **响应式并非浏览器 50% 缩放**：针对窗口与组件实际可用宽度设计降级（常驻侧栏→抽屉、两列→单列），不得无限压缩字体。
 - **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
 - **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
