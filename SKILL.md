@@ -59,7 +59,7 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 | 需要解决的问题 | 仅读取必要文件 |
 |---|---|
 | 需求含糊、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
-| 三段视频里的视觉、暗色字重、流式淡入、数字、动效 | [visual-polish.md](references/visual-polish.md) |
+| 视觉层级、标题/副标题密度、暗色字重、流式淡入、数字、动效 | [visual-polish.md](references/visual-polish.md) |
 | 文本撑宽、滚动条挤压、四象限、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
 | Reload / Remount / Re-render / Refetch、闪烁和丢状态 | [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md) + [examples/react-stability.tsx](examples/react-stability.tsx) |
 | 生成期间能切换、后台任务不断、断线恢复、竞争条件 | [async-nonblocking-ux.md](references/async-nonblocking-ux.md) + [examples/task-manager.ts](examples/task-manager.ts) + [examples/task-ui.tsx](examples/task-ui.tsx) |

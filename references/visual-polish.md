@@ -17,6 +17,7 @@ Bottom Sheet、Action Sheet、Snackbar、AlertDialog、Inline Alert；Tooltip、
 ## 工程建议（本 Skill 补充）
 
 - Design tokens 集中管理，优先继承已有品牌和暗色模式，不直接覆盖业务色彩。
+- 标题层级保持克制：避免 eyebrow、标题、副标题与辅助说明层层堆叠；只有当副标题补充了标题未表达的信息时才保留，避免重复释义或为填充版面硬加文案。
 - 降低动画 DOM 成本：不要每次 SSE chunk 为每个字符新建永久 span；短片段动画+reduced-motion；长 Markdown、代码、表格显示稳定优先。
 - 首帧/内容加载保持视觉稳定，不做全屏闪屏骨架；仅 skeleton 局部必要区域。
 - 数字从 99 → 100 位数变化时 `tabular-nums` 并不保证整个数字盒子宽度不变，必要时额外预留宽度。
