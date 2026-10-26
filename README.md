@@ -75,3 +75,9 @@ ai-frontend-quality/
 - 对作者 500ms IME、CSS 0% CPU、clip-audit 零告警等主张做了适用条件与验证提醒。原始仓库及 MIT 许可见 [Ludi-Herry/desktop-agent-ui](https://github.com/Ludi-Herry/desktop-agent-ui)，本包不包含其原版脚本。
 
 **升级注意**：从 v1.0 升级时，先备份本地可能修改过的 Skill，然后替换 `ai-frontend-quality/` 整个目录；不要把两个版本的同名 Skill 同时安装。作者原版 `desktop-agent-ui` 也可以作为单独 Skill 安装，但建议避免在同一任务里强制加载两份互相重叠的规则。
+
+## v1.3 新增内容（异步加载与内容切换）
+
+- 刷新、切换工作区时优先保留仍有效的内容；必要时尽早展示贴合布局的局部 skeleton。
+- 内容就绪后可用克制的淡入淡出衔接，不阻塞操作；快速请求避免闪烁，并遵循 `prefers-reduced-motion`。
+- 补充 Apple HIG Loading 与 Motion 官方参考，并注明动效时长属于项目验证项，不是 Apple 规定值。

@@ -14,6 +14,13 @@
 
 Bottom Sheet、Action Sheet、Snackbar、AlertDialog、Inline Alert；Tooltip、Toast、Modal、Popconfirm、Drawer 的语义差异。重点不是“新潮组件”，而是**使用任务和误触风险驱动选择**。详见 [requirements-and-component-choice.md](requirements-and-component-choice.md)。
 
+## 异步加载与内容切换
+
+- 刷新、切换工作区等操作开始后，尽快反馈当前区域的加载状态。旧内容仍适用于当前视图时先保留，避免空白和无意义闪烁；旧内容不再适用时，用与真实内容结构相近的局部 skeleton 占位，保持尺寸和布局稳定。不要用全屏遮罩替代局部反馈。
+- 数据就绪后直接替换占位内容；短暂的透明度淡入淡出可以帮助用户感知内容已切换。动效保持克制，不用大幅位移或缩放，也不能等待动画结束才允许继续操作。具体时长由真实界面验证，Apple 指南没有规定统一数值。
+- 请求很快完成时不显示一闪而过的 skeleton 或过渡动画。尊重 `prefers-reduced-motion`，减少或关闭装饰性过渡，同时保留清晰的状态变化。
+- 这些是结合 Apple 人机界面指南形成的工程建议；Apple 的原则是尽早呈现可用反馈、用动画传达有意义的变化，并避免无意义或阻塞用户的动效。
+
 ## 工程建议（本 Skill 补充）
 
 - Design tokens 集中管理，优先继承已有品牌和暗色模式，不直接覆盖业务色彩。

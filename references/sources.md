@@ -20,6 +20,8 @@
 - MDN Server-Sent Events： https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 - MDN Web 性能/CLS： https://web.dev/articles/cls
 - WAI-ARIA APG Dialog： https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+- Apple Human Interface Guidelines — Loading： https://developer.apple.com/design/human-interface-guidelines/loading
+- Apple Human Interface Guidelines — Motion： https://developer.apple.com/design/human-interface-guidelines/motion
 
 ## 适配提示
 
