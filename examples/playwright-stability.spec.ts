@@ -52,31 +52,3 @@ test('编辑一条卡片不会让无关卡片的输入草稿重置', async ({ pa
 
 // 额外：检测请求是否发起 document Reload、卡片编辑时是否出现全屏 Loading、
 // 任务中断线重连、cancel_requested/完成竞态、SSE seq 去重；也应有人手测。
-
-// New-video regression ideas. The selectors/routes are placeholders for project integration.
-test.skip('中文输入法 Enter 确认候选词不应直接发送', async ({ page }) => {
-  await page.goto('/chats/A');
-  // Playwright keyboard alone does not faithfully simulate a real OS IME session.
-  // Use a manual cross-platform CJK IME matrix, or app-level synthetic composition
-  // event test for the event handler (both are needed; neither proves the other).
-  await expect(page.getByTestId('message-composer')).toBeVisible();
-});
-
-test.skip('流式输出期间，上滚阅读不会被自动拉回底部', async ({ page }) => {
-  await page.goto('/chats/long-stream');
-  const history = page.getByTestId('chat-history');
-  await history.evaluate(el => { el.scrollTop = 0; });
-  const before = await history.evaluate(el => el.scrollTop);
-  // Insert mock streamed chunks here, then verify scrollTop does not jump.
-  expect(await history.evaluate(el => el.scrollTop)).toBe(before);
-  await page.getByRole('button', { name: /回到底部/ }).click();
-});
-
-test.skip('分屏 drag / Escape / 折叠后可以恢复', async ({ page }) => {
-  await page.goto('/workspace/split');
-  const handle = page.getByRole('separator', { name: '调整左右面板宽度' });
-  await handle.focus();
-  await page.keyboard.press('ArrowLeft');
-  await expect(handle).toHaveAttribute('aria-valuenow', /\d+/);
-  // Pointer movement + Escape + pointercancel requires project-specific tests.
-});

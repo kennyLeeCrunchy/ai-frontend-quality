@@ -6,7 +6,7 @@
  * 必须保证事件已持久化、任务状态可查询、客户端有权访问。
  */
 
-export type TaskStatus = 'queued' | 'running' | 'streaming' | 'succeeded' | 'failed' | 'cancelled';
+export type TaskStatus = 'queued' | 'running' | 'streaming' | 'cancel_requested' | 'succeeded' | 'failed' | 'cancelled';
 export type Task = {
   taskId: string;
   conversationId: string;
@@ -19,7 +19,7 @@ export type Task = {
 export type TaskEvent = {
   taskId: string;
   seq: number;
-  type: 'running' | 'delta' | 'succeeded' | 'failed' | 'cancelled';
+  type: 'running' | 'delta' | 'cancel_requested' | 'succeeded' | 'failed' | 'cancelled';
   text?: string;
   snapshot?: string;
   error?: string;
@@ -32,6 +32,7 @@ class TaskManager {
   private snapshot: Snapshot = {};
   private listeners = new Set<() => void>();
   private streams = new Map<string, EventSource>();
+  private cancelRequests = new Set<string>();
 
   // getSnapshot 返回稳定引用；只有数据改变时才分配新对象。
   getSnapshot = (): Snapshot => this.snapshot;
@@ -74,14 +75,18 @@ class TaskManager {
       if (event.taskId !== taskId || !Number.isSafeInteger(event.seq)) return;
       const current = this.snapshot[taskId];
       if (!current || event.seq <= current.lastSeq) return; // 重放去重
-      this.set(taskId, old => ({
-        ...old,
-        lastSeq: event.seq,
-        status: event.type === 'delta' ? 'streaming' : event.type,
-        // 终态优先用权威快照，避免掉事件或重复追加导致文字损坏
-        text: event.snapshot ?? (event.type === 'delta' ? old.text + (event.text ?? '') : old.text),
-        error: event.error ?? old.error,
-      }));
+      this.set(taskId, old => {
+        const nextStatus: TaskStatus = event.type === 'delta' ? 'streaming' : event.type;
+        return {
+          ...old,
+          lastSeq: event.seq,
+          status: old.status === 'cancel_requested' && !terminal.has(nextStatus)
+            ? 'cancel_requested' : nextStatus,
+          // 终态优先用权威快照，避免掉事件或重复追加导致文字损坏
+          text: event.snapshot ?? (event.type === 'delta' ? old.text + (event.text ?? '') : old.text),
+          error: event.error ?? old.error,
+        };
+      });
       const updated = this.snapshot[taskId];
       if (updated && terminal.has(updated.status)) this.disconnect(taskId);
     };
@@ -95,12 +100,23 @@ class TaskManager {
   }
 
   async cancel(taskId: string) {
-    const res = await fetch(`/api/tasks/${encodeURIComponent(taskId)}/cancel`, {
-      method: 'POST', credentials: 'same-origin',
-      // 实际项目还需按现有鉴权方式处理 CSRF / token。
-    });
-    if (!res.ok) throw new Error(`取消请求失败: ${res.status}`);
-    // 这里只发出取消请求，不在服务端确认前直接把任务标记为 cancelled。
+    const task = this.snapshot[taskId];
+    if (!task || terminal.has(task.status) || task.status === 'cancel_requested' || this.cancelRequests.has(taskId)) return;
+    this.cancelRequests.add(taskId);
+    try {
+      const res = await fetch(`/api/tasks/${encodeURIComponent(taskId)}/cancel`, {
+        method: 'POST', credentials: 'same-origin',
+        // 实际项目还需按现有鉴权方式处理 CSRF / token。
+      });
+      if (!res.ok) throw new Error(`取消请求失败: ${res.status}`);
+      const result = await res.json() as { status: TaskStatus };
+      if (result.status === 'cancel_requested') {
+        this.set(taskId, old => terminal.has(old.status) ? old : { ...old, status: 'cancel_requested' });
+      }
+      // cancel_requested 是服务端已接受请求；最终 cancelled 或 succeeded 仍由任务事件确认。
+    } finally {
+      this.cancelRequests.delete(taskId);
+    }
   }
 }
 

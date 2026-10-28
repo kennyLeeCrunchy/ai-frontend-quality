@@ -1,8 +1,8 @@
 ---
 name: ai-frontend-quality
-description: 在开发、审查或修复 React/Vue/AI Agent 客户端、工作台、聊天界面时使用。重点处理 UI/UX 组件选型（Tooltip/Toast/Snackbar/Dialog/Drawer/Sheet）、视觉质感、文字溢出、布局跳动、滚动条挤压、响应式缩放、React 重新渲染/重挂载、局部 Loading、SSE 生成中切换对话不中断、任务/服务器/UI 状态隔离、可访问性与前端验收。需求不明确时先判定是否需向用户确认，禁止凭个人偏好擅自修改重要交互。
+description: 审查或改进 Web/AI 客户端的交互与稳定性，尤其是布局、响应式、加载反馈、聊天流状态和可访问性。纯后端任务不适用。
 metadata:
-  version: '1.4.3'
+  version: '1.4.4'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX

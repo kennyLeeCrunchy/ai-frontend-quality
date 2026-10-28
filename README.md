@@ -1,4 +1,4 @@
-# AI Frontend Quality Skill · v1.4.3
+# AI Frontend Quality Skill · v1.4.4
 
 适合 Codex / Claude Code / Cursor（支持 Agent Skills 的运行方式）在开发或审查 AI 客户端与 Web 工作台时使用。
 
@@ -101,3 +101,8 @@ ai-frontend-quality/
 
 - 统一加载补上空态、错误与慢请求的退出路径；简单界面修复按需选择步骤，任务复杂度分档只用于异步任务。
 - 修正任务示例中的重试幂等键与用户可见错误文案；静态扫描器遍历时跳过依赖和构建目录。
+
+## v1.4.4 修订（文件与契约审查）
+
+- 缩短 skill 触发描述；其余示例统一安全错误文案。
+- 取消任务示例处理服务端 `cancel_requested` 并展示等待终态；未实现的 Playwright 占位场景改为待验收清单。

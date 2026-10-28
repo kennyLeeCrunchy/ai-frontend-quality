@@ -32,3 +32,9 @@
 3. 修后结果；例如任务运行时是否仍可切 B、草稿是否保留；不要凭截图宣布已修复网络/状态问题。
 4. Playwright 可作基础回归；使用 [examples/playwright-stability.spec.ts](../examples/playwright-stability.spec.ts) 的测试骨架并适配项目真实 selector。
 5. 说明未执行的浏览器/屏幕/恢复场景，不捏造测试通过。
+
+## 需按项目补齐的验收
+
+- 中文输入法：真实设备上验证 Enter 选词不会发送，结束组字后明确发送有效；合成 composition 事件的组件测试只能覆盖处理器逻辑。
+- 流式阅读：用可控的流式数据验证用户上滚后位置稳定，回到底部操作恢复跟随。
+- 分屏：在实际拖拽组件上验证键盘调宽、Escape 取消、折叠恢复与 `pointercancel`。没有对应实现时只记录待验收，不添加空的 `test.skip`。

@@ -51,7 +51,7 @@ export function QuadrantCards(props: { workspaceId: string; quadrantId: string }
           onSave={next => mutation.mutate(next)}
         />
       ))}
-      {mutation.isError && <p role="alert">保存失败：{mutation.error.message}</p>}
+      {mutation.isError && <p role="alert">暂时无法保存，请重试；输入内容已保留。</p>}
     </div>
   );
 }

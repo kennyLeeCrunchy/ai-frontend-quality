@@ -38,7 +38,7 @@ export function ArchiveListWithUndo({ cards }: { cards: Card[] }) {
       await setArchived(card.id, true);
       setHiddenIds(old => new Set([...old, card.id]));
       setNotice({ cardId: card.id, title: card.title, expiresAt: Date.now() + 5000 });
-    } catch (err) { setError(String(err)); }
+    } catch { setError('暂时无法归档，请重试。'); }
     finally { setBusyId(null); }
   }
   async function undo() {
@@ -49,8 +49,8 @@ export function ArchiveListWithUndo({ cards }: { cards: Card[] }) {
       await setArchived(target.cardId, false);
       setHiddenIds(old => { const next = new Set(old); next.delete(target.cardId); return next; });
       setNotice(null);
-    } catch (err) {
-      setError(`恢复失败，请到回收站重试：${String(err)}`);
+    } catch {
+      setError('暂时无法恢复，请到回收站重试。');
       setNotice(null); // 不是唯一恢复通道；保留持久入口
     } finally { setBusyId(null); }
   }

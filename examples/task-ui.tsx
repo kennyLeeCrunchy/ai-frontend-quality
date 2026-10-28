@@ -10,6 +10,10 @@ import { taskManager, type Task } from './task-manager';
 type PendingSend = { message: string; idempotencyKey: string };
 type ChatUiState = { draft: string; creating: boolean; error: string | null; pendingSend: PendingSend | null };
 const DEFAULT_UI: ChatUiState = { draft: '', creating: false, error: null, pendingSend: null };
+const TASK_LABEL: Record<Task['status'], string> = {
+  queued: '排队中', running: '处理中', streaming: '正在生成',
+  cancel_requested: '正在停止', succeeded: '已完成', failed: '处理失败', cancelled: '已停止',
+};
 
 class ChatUiStore {
   private snapshot: Readonly<Record<string, ChatUiState>> = {};
@@ -85,8 +89,10 @@ export function ChatWorkspace({ conversationId }: { conversationId: string }) {
     <div>
       {tasks.map(t => <article key={t.taskId}>
         <p>{t.text}</p>
-        <small role="status" aria-live="polite">{t.status} · {t.connection}</small>
-        {!['succeeded', 'failed', 'cancelled'].includes(t.status) &&
+        <small role="status" aria-live="polite">
+          {TASK_LABEL[t.status]}{t.connection === 'reconnecting' ? ' · 正在重连' : ''}
+        </small>
+        {!['cancel_requested', 'succeeded', 'failed', 'cancelled'].includes(t.status) &&
           <button onClick={() => {
             void taskManager.cancel(t.taskId).catch(() =>
               chatUiStore.set(conversationId, { error: '暂时无法停止生成，请稍后重试。' })
