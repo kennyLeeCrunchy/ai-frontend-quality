@@ -1,4 +1,4 @@
-# AI Frontend Quality Skill · v1.1
+# AI Frontend Quality Skill · v1.4
 
 适合 Codex / Claude Code / Cursor（支持 Agent Skills 的运行方式）在开发或审查 AI 客户端与 Web 工作台时使用。
 
@@ -14,6 +14,7 @@ ai-frontend-quality/
 │   ├── layout-and-responsive.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
+│   ├── interaction-and-recovery.md
 │   ├── backend-sse-contract.md
 │   ├── verification-matrix.md
 │   ├── desktop-chat-microinteractions.md
@@ -81,3 +82,10 @@ ai-frontend-quality/
 - 刷新、切换工作区时优先保留仍有效的内容；必要时尽早展示贴合布局的局部 skeleton。
 - 内容就绪后可用克制的淡入淡出衔接，不阻塞操作；快速请求避免闪烁，并遵循 `prefers-reduced-motion`。
 - 补充 Apple HIG Loading 与 Motion 官方参考，并注明动效时长属于项目验证项，不是 Apple 规定值。
+
+## v1.4 新增内容（协同加载与恢复交互）
+
+- 工作区相关的画布与对话区域共享切换生命周期，关联内容齐备后同步呈现，减少连续闪屏和数据错配。
+- 对忙碌期间的上传/导入定义并行、排队和冲突反馈；明确区分已选择、上传、排队、处理与完成状态，说明内存任务和持久恢复能力的差异。
+- 暂不可操作的控件在悬停/键盘聚焦时说明原因和下一步，并覆盖触屏可达性、无障碍语义及所有执行入口的硬拦截。
+- 整卡选择命中区覆盖卡片空白区域，同时保持删除、展开、链接等嵌套动作独立；工作区稳定身份和展示编号保持一致。

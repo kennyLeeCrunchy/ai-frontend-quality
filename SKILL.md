@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 在开发、审查或修复 React/Vue/AI Agent 客户端、工作台、聊天界面时使用。重点处理 UI/UX 组件选型（Tooltip/Toast/Snackbar/Dialog/Drawer/Sheet）、视觉质感、文字溢出、布局跳动、滚动条挤压、响应式缩放、React 重新渲染/重挂载、局部 Loading、SSE 生成中切换对话不中断、任务/服务器/UI 状态隔离、可访问性与前端验收。需求不明确时先判定是否需向用户确认，禁止凭个人偏好擅自修改重要交互。
 metadata:
-  version: '1.3.0'
+  version: '1.4.0'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
@@ -46,6 +46,9 @@ metadata:
 - **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
 - **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
 - **异步加载与内容切换**：刷新或切换工作区时，先保留仍有效的旧内容；没有可用内容时尽早显示贴合实际布局的局部 skeleton。数据就绪后再替换，可用克制的淡入淡出衔接，但不延迟内容出现或用户操作；快速完成的请求避免闪一下 skeleton。遵循 `prefers-reduced-motion`。具体做法见 [visual-polish.md](references/visual-polish.md) 与 [Apple HIG 的 Loading、Motion 指南](references/sources.md)。
+- **协同区域同批切换**：画布、对话栏等属于同一工作区快照时，加载占位和数据切换应由同一切换状态协调，避免各区域先后硬切或重复闪烁；若有可用旧快照就整体保留，若无则显示匹配各区域结构的 skeleton，关键数据齐备后在同一提交点替换。按需拆分真正独立的次要数据，不能为视觉同步延迟无关的可用内容。参考 [interaction-and-recovery.md](references/interaction-and-recovery.md)。
+- **操作受限时给出可行动原因**：重要操作暂不可用时，避免只显示禁止光标或完全禁用导致用户无法获知原因。选择能在悬停和键盘聚焦时出现的简短原因与下一步提示；需要提示的控件可用 `aria-disabled` 保持可聚焦并在事件处理中阻止操作，同时提供 `aria-describedby`，不要只依赖鼠标悬停或 `title`。较长说明用就近的 inline 状态。参考 [interaction-and-recovery.md](references/interaction-and-recovery.md)。
+- **卡片点击边界**：若整张卡是选择控件，命中区应覆盖整个卡片（包含内容空白区），但删除、展开、链接、输入等嵌套控件必须保留自己的动作且不能触发父级选择。用语义正确的按钮/选项、明确的键盘操作和焦点态表达选择；不要仅靠文字变色暗示选中。参考 [interaction-and-recovery.md](references/interaction-and-recovery.md)。
 - **不引入不必要依赖或大规模架构重写**；如确需新库/持久任务基础设施，说明引入理由与迁移成本。
 
 ## 扩展：新视频与 desktop-agent-ui（按需启用）
@@ -66,6 +69,7 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 | Reload / Remount / Re-render / Refetch、闪烁和丢状态 | [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md) + [examples/react-stability.tsx](examples/react-stability.tsx) |
 | 生成期间能切换、后台任务不断、断线恢复、竞争条件 | [async-nonblocking-ux.md](references/async-nonblocking-ux.md) + [examples/task-manager.ts](examples/task-manager.ts) + [examples/task-ui.tsx](examples/task-ui.tsx) |
 | FastAPI / SSE 任务持久化/协议 | [backend-sse-contract.md](references/backend-sse-contract.md) |
+| 忙碌期间的延后操作、统一加载切换、不可用原因和卡片命中区 | [interaction-and-recovery.md](references/interaction-and-recovery.md) |
 | 测试与验收 | [verification-matrix.md](references/verification-matrix.md) + [examples/playwright-stability.spec.ts](examples/playwright-stability.spec.ts) |
 | 新视频：中文选词、回底策略、边框与圆角、长文件名 | [desktop-chat-microinteractions.md](references/desktop-chat-microinteractions.md) + 对应 examples |
 | 分屏可恢复拖拽、透明桌面窗阴影、跨窗口同步 | [desktop-resizable-and-shell.md](references/desktop-resizable-and-shell.md) + [examples/resizable-workspace.tsx](examples/resizable-workspace.tsx) |
