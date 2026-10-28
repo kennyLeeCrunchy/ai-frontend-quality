@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 在开发、审查或修复 React/Vue/AI Agent 客户端、工作台、聊天界面时使用。重点处理 UI/UX 组件选型（Tooltip/Toast/Snackbar/Dialog/Drawer/Sheet）、视觉质感、文字溢出、布局跳动、滚动条挤压、响应式缩放、React 重新渲染/重挂载、局部 Loading、SSE 生成中切换对话不中断、任务/服务器/UI 状态隔离、可访问性与前端验收。需求不明确时先判定是否需向用户确认，禁止凭个人偏好擅自修改重要交互。
 metadata:
-  version: '1.4.2'
+  version: '1.4.3'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
@@ -15,23 +15,23 @@ metadata:
 
 不触发：纯后端重构、与 UI 无关的服务端算法或纯静态文案润色（除非用户明确请求前端体验优化）。
 
-## 执行顺序（必须按问题相关性执行）
+## 按问题选择工作步骤
 
-1. **理解任务和界面**：读项目的 README、组件、路由、状态/请求、CSS tokens、交互组件库、现有测试；记录框架及依赖。没有代码则输出设计建议与*明确标注的示意实现*，不得装作已经改好。
+1. **理解任务和界面**：只读与问题相关的组件、状态、样式和项目规范；需要时再查看路由、请求与测试。没有代码则输出设计建议与*明确标注的示意实现*，不得装作已经改好。
 2. **需求门槛：判断是否必须问用户**：在选择对话框/抽屉/撤销、移动端交互、任务跨页面继续运行、信息布局变化等方案前，确认用户目标、风险、是否可撤销、内容量、所需上下文、目标设备、已有规范。
    - **会产生明显不同交互或影响数据安全，而现有信息无法推断时**：先用最多 1–3 个具体的、可回答的问题征询用户；给出可选方案和权衡，不用“你喜欢哪种”这种空问法。
    - **需求已经明确或改动低风险可逆时**：不要机械地询问；陈述假设并直接开展最小可行修改。
    - 用户明确授权自行决策时依风险、已有设计系统与一致性选择，并说明理由；不能默许高风险操作。
    - 参考 [requirements-and-component-choice.md](references/requirements-and-component-choice.md)。
-3. **诊断与分类**：先确认是布局、滚动、响应式、视觉、路由 Reload、Remount、Re-render、Refetch、主线程阻塞，还是全局状态/任务生命周期问题；用证据排除猜测。参考 [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md)、[layout-and-responsive.md](references/layout-and-responsive.md)。
-4. **选复杂度档位**：
+3. **诊断与分类**：只排查与现象有关的布局、滚动、视觉、渲染、请求或任务生命周期问题；用证据排除猜测。按需参考 [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md)、[layout-and-responsive.md](references/layout-and-responsive.md)。
+4. **涉及异步任务与状态生命周期时，再选复杂度档位**：
    - S：组件内部状态、局部 Loading、基础响应式；适合简单页面。
    - M：路由外任务管理器、TanStack Query/现有缓存、并发互不阻塞、避免组件卸载取消流；适合多对话 SPA。
    - L：服务端持久任务 ID、事件序列/重放、任务恢复/worker、幂等及并发版本控制；适合长耗时 AI Agent、多端/断线恢复。
    - 绝不把 L 档作为所有按钮 Loading 的默认解决方案。参考 [async-nonblocking-ux.md](references/async-nonblocking-ux.md)。
 5. **小步实施**：复用现有组件，优先修正错误边界与状态归属，严禁以 `overflow:hidden`、缩小所有文字、统一 `pointer-events:none` 掩盖问题；重要视觉改动提供前后对照。
-6. **验证**：覆盖长文本、增删编辑、侧栏收起/展开、滚动条、不同容器宽度与浏览器缩放、键盘/焦点、流式生成期间切对话、后台完成回填、错误/取消/重试。用对应性能/网络工具验证根因；参考 [verification-matrix.md](references/verification-matrix.md)。
-7. **汇报**：说明「观察与证据 → 根因 → 选择方案及被放弃方案 → 具体文件 → 验证结果 → 剩余风险」。未运行的测试必须说未运行。
+6. **验证**：选择与改动直接相关的内容、尺寸、输入方式和异步状态；仅为具体风险扩大范围。需要时用性能/网络工具验证根因，参考 [verification-matrix.md](references/verification-matrix.md)。
+7. **汇报**：简述发现、改动和有意义的验证；只有影响判断的限制或风险才展开说明。
 
 ## 不可违反的原则
 
@@ -45,7 +45,7 @@ metadata:
 - **响应式并非浏览器 50% 缩放**：针对窗口与组件实际可用宽度设计降级（常驻侧栏→抽屉、两列→单列），不得无限压缩字体。
 - **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
 - **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
-- **异步加载与内容切换**：刷新或切换视图时，先保留仍有效的旧内容；没有可用内容时尽早显示贴合实际布局的局部 skeleton。同一视图中需要一起呈现的区域应由统一就绪状态释放骨架，并让内容同步、克制地淡入淡出，避免分批闪现或硬切；独立区域不必为此等待。快速完成的请求避免闪一下 skeleton，不延迟内容出现或用户操作，并遵循 `prefers-reduced-motion`。具体做法见 [visual-polish.md](references/visual-polish.md) 与 [Apple HIG 的 Loading、Motion 指南](references/sources.md)。
+- **异步加载与内容切换**：刷新或切换视图时，先保留仍有效的旧内容；没有可用内容时尽早显示贴合实际布局的局部 skeleton。同一视图中需要一起呈现的区域由统一就绪状态释放骨架；成功、空态或可展示的错误都应结束等待，慢请求须有恢复路径。内容可同步、克制地淡入淡出；独立区域不必等待。快速完成的请求避免闪一下 skeleton，不延迟内容出现或用户操作，并遵循 `prefers-reduced-motion`。具体做法见 [visual-polish.md](references/visual-polish.md) 与 [Apple HIG 的 Loading、Motion 指南](references/sources.md)。
 - **不引入不必要依赖或大规模架构重写**；如确需新库/持久任务基础设施，说明引入理由与迁移成本。
 
 ## 扩展：新视频与 desktop-agent-ui（按需启用）
@@ -73,11 +73,11 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 | 作者源码审查与实现边界 | [ludi-review-and-safety-notes.md](references/ludi-review-and-safety-notes.md) |
 | 外部权威资料、视频来源及界限 | [sources.md](references/sources.md) |
 
-## 输出模板
+## 输出要点（按任务取用）
 
 - **场景/确认**：已知需求；必要的 1–3 个待确认问题（若无则无需询问）。
 - **现象与根因**：证据及置信度；先解释“为什么”。
-- **方案**：组件/布局/缓存/任务模式，为什么适合；局部优先，复杂度 S/M/L。
+- **方案**：说明相关的组件、布局或状态调整；只有异步任务问题才使用复杂度 S/M/L。
 - **实施**：逐文件说明 + 有意义的差异。
 - **验收**：实测环境、通过与未测案例、可回退方案。
 

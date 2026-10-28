@@ -7,8 +7,9 @@
 import { useSyncExternalStore } from 'react';
 import { taskManager, type Task } from './task-manager';
 
-type ChatUiState = { draft: string; creating: boolean; error: string | null };
-const DEFAULT_UI: ChatUiState = { draft: '', creating: false, error: null };
+type PendingSend = { message: string; idempotencyKey: string };
+type ChatUiState = { draft: string; creating: boolean; error: string | null; pendingSend: PendingSend | null };
+const DEFAULT_UI: ChatUiState = { draft: '', creating: false, error: null, pendingSend: null };
 
 class ChatUiStore {
   private snapshot: Readonly<Record<string, ChatUiState>> = {};
@@ -41,16 +42,19 @@ export function ChatWorkspace({ conversationId }: { conversationId: string }) {
   const uiByConversation = useChatUiSnapshot();
   const ui = uiByConversation[conversationId] ?? DEFAULT_UI;
   const tasks = Object.values(tasksById).filter(t => t.conversationId === conversationId);
-  const current = tasks.at(-1);
-  const active = current && !['succeeded', 'failed', 'cancelled'].includes(current.status);
+  const active = tasks.some(t => !['succeeded', 'failed', 'cancelled'].includes(t.status));
 
   async function sendMessage() {
     // 读取最新 store，而不是依赖可能过期的闭包。
     const state = chatUiStore.getSnapshot()[conversationId] ?? DEFAULT_UI;
     if (!state.draft.trim() || state.creating || active) return;
     const message = state.draft.trim();
-    chatUiStore.set(conversationId, { creating: true, error: null });
-    const idempotencyKey = crypto.randomUUID();
+    // 响应丢失后的同内容重试必须沿用原键；修改草稿则是新请求。
+    const idempotencyKey = state.pendingSend?.message === message
+      ? state.pendingSend.idempotencyKey : crypto.randomUUID();
+    chatUiStore.set(conversationId, {
+      creating: true, error: null, pendingSend: { message, idempotencyKey },
+    });
     try {
       const res = await fetch('/api/tasks', {
         method: 'POST',
@@ -58,18 +62,19 @@ export function ChatWorkspace({ conversationId }: { conversationId: string }) {
         headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
         body: JSON.stringify({ conversationId, prompt: message }),
       });
-      if (!res.ok) throw new Error(`创建任务失败: ${res.status}`);
+      if (!res.ok) throw new Error('task creation failed');
       const json: { taskId: string; status: Task['status'] } = await res.json();
       taskManager.track({ taskId: json.taskId, conversationId, status: json.status,
         text: '', lastSeq: 0, connection: 'connecting' });
+      chatUiStore.set(conversationId, { pendingSend: null });
       // 用户在等待期间可能编辑了原草稿：不能把这些新文字清掉。
       const latest = chatUiStore.getSnapshot()[conversationId];
       if (latest?.draft === state.draft) chatUiStore.set(conversationId, { draft: '' });
-    } catch (err) {
+    } catch {
       chatUiStore.set(conversationId, {
-        error: err instanceof Error ? err.message : '发送失败',
+        error: '暂时无法确认发送结果，请重试；草稿已保留。',
       });
-      // 真正重试应复用上面的 idempotencyKey，防止请求成功但响应丢失时重复建任务。
+      // 生产系统应在受控日志中记录错误类别；界面只展示安全的用户文案。
     } finally {
       chatUiStore.set(conversationId, { creating: false });
     }
@@ -83,8 +88,8 @@ export function ChatWorkspace({ conversationId }: { conversationId: string }) {
         <small role="status" aria-live="polite">{t.status} · {t.connection}</small>
         {!['succeeded', 'failed', 'cancelled'].includes(t.status) &&
           <button onClick={() => {
-            void taskManager.cancel(t.taskId).catch(err =>
-              chatUiStore.set(conversationId, { error: String(err) })
+            void taskManager.cancel(t.taskId).catch(() =>
+              chatUiStore.set(conversationId, { error: '暂时无法停止生成，请稍后重试。' })
             );
           }}>停止生成</button>}
       </article>)}

@@ -2,6 +2,7 @@
 """静态风险线索扫描：非 AST 检查，不等于真实诊断。用法 python scripts/audit-ui.py /path/to/project"""
 from pathlib import Path
 import argparse
+import os
 import re
 
 RULES = [
@@ -17,19 +18,22 @@ SUFFIXES = {'.js', '.jsx', '.ts', '.tsx', '.vue', '.css', '.scss', '.svelte'}
 
 def scan(root: Path):
     hits = []
-    for file in root.rglob('*'):
-        if not file.is_file() or file.suffix not in SUFFIXES or any(x in EXCLUDE for x in file.parts):
-            continue
-        if file.stat().st_size > 800_000:
-            continue
-        try:
-            lines = file.read_text(encoding='utf8').splitlines()
-        except (UnicodeError, OSError):
-            continue
-        for number, line in enumerate(lines, 1):
-            for code, title, pattern in RULES:
-                if pattern.search(line):
-                    hits.append((str(file.relative_to(root)), number, code, title, line.strip()[:130]))
+    for directory, dirs, names in os.walk(root):
+        dirs[:] = [name for name in dirs if name not in EXCLUDE]
+        for name in names:
+            file = Path(directory) / name
+            if file.suffix not in SUFFIXES:
+                continue
+            try:
+                if file.stat().st_size > 800_000:
+                    continue
+                lines = file.read_text(encoding='utf8').splitlines()
+            except (UnicodeError, OSError):
+                continue
+            for number, line in enumerate(lines, 1):
+                for code, title, pattern in RULES:
+                    if pattern.search(line):
+                        hits.append((str(file.relative_to(root)), number, code, title, line.strip()[:130]))
     return hits
 
 if __name__ == '__main__':
