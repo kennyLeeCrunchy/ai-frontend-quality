@@ -12,9 +12,9 @@ ai-frontend-quality/
 │   ├── requirements-and-component-choice.md
 │   ├── visual-polish.md
 │   ├── layout-and-responsive.md
+│   ├── mobile-touch-targets.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
-│   ├── interaction-and-recovery.md
 │   ├── backend-sse-contract.md
 │   ├── verification-matrix.md
 │   ├── desktop-chat-microinteractions.md
@@ -55,7 +55,7 @@ ai-frontend-quality/
 
 ## 使用示例
 
-- “按 ai-frontend-quality 审查四象限工作台的文字溢出和侧栏挤压。”
+- “按 ai-frontend-quality 审查多栏工作台的文字溢出和侧栏挤压。”
 - “切换对话时 SSE 经常中断，诊断并修复，不要影响其他对话。”
 - “需求不明确时先跟我确认应该用 Drawer、Modal 还是独立页面。”
 - “AI 生成过程中全屏 Loading，改为局部非阻塞交互，并补回归测试。”
@@ -83,9 +83,7 @@ ai-frontend-quality/
 - 内容就绪后可用克制的淡入淡出衔接，不阻塞操作；快速请求避免闪烁，并遵循 `prefers-reduced-motion`。
 - 补充 Apple HIG Loading 与 Motion 官方参考，并注明动效时长属于项目验证项，不是 Apple 规定值。
 
-## v1.4 新增内容（协同加载与恢复交互）
+## v1.4 新增内容（移动端点击区域）
 
-- 工作区相关的画布与对话区域共享切换生命周期，关联内容齐备后同步呈现，减少连续闪屏和数据错配。
-- 对忙碌期间的上传/导入定义并行、排队和冲突反馈；明确区分已选择、上传、排队、处理与完成状态，说明内存任务和持久恢复能力的差异。
-- 暂不可操作的控件在悬停/键盘聚焦时说明原因和下一步，并覆盖触屏可达性、无障碍语义及所有执行入口的硬拦截。
-- 整卡选择命中区覆盖卡片空白区域，同时保持删除、展开、链接等嵌套动作独立；工作区稳定身份和展示编号保持一致。
+- 增加移动端适配参考：区分视觉范围和真实可点击范围，定位点击死区、透明层拦截与相邻控件误触。
+- 结合触控目标尺寸、滚动手势和键盘可达性检查；尺寸依据与视频观点分别标注来源。

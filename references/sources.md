@@ -22,6 +22,9 @@
 - WAI-ARIA APG Dialog： https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
 - Apple Human Interface Guidelines — Loading： https://developer.apple.com/design/human-interface-guidelines/loading
 - Apple Human Interface Guidelines — Motion： https://developer.apple.com/design/human-interface-guidelines/motion
+- WCAG 2.2 — Target Size (Minimum)： https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum
+- Apple UI Design Tips — Hit Targets： https://developer.apple.com/design/tips/
+- MDN CSS pointer-events： https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/pointer-events
 
 ## 适配提示
 
