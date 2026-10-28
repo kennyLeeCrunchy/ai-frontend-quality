@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 在开发、审查或修复 React/Vue/AI Agent 客户端、工作台、聊天界面时使用。重点处理 UI/UX 组件选型（Tooltip/Toast/Snackbar/Dialog/Drawer/Sheet）、视觉质感、文字溢出、布局跳动、滚动条挤压、响应式缩放、React 重新渲染/重挂载、局部 Loading、SSE 生成中切换对话不中断、任务/服务器/UI 状态隔离、可访问性与前端验收。需求不明确时先判定是否需向用户确认，禁止凭个人偏好擅自修改重要交互。
 metadata:
-  version: '1.4.0'
+  version: '1.4.1'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
@@ -63,7 +63,7 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 | 需求含糊、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
 | 视觉层级、标题/副标题密度、暗色字重、流式淡入、数字、动效、异步内容切换 | [visual-polish.md](references/visual-polish.md) |
 | 文本撑宽、滚动条挤压、多栏布局、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
-| 手机触控、点击死区、有效点击区域与相邻控件误触 | [mobile-touch-targets.md](references/mobile-touch-targets.md) |
+| 桌面或移动端的点击死区、有效命中区与相邻控件误触 | [pointer-hit-targets.md](references/pointer-hit-targets.md) |
 | Reload / Remount / Re-render / Refetch、闪烁和丢状态 | [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md) + [examples/react-stability.tsx](examples/react-stability.tsx) |
 | 生成期间能切换、后台任务不断、断线恢复、竞争条件 | [async-nonblocking-ux.md](references/async-nonblocking-ux.md) + [examples/task-manager.ts](examples/task-manager.ts) + [examples/task-ui.tsx](examples/task-ui.tsx) |
 | FastAPI / SSE 任务持久化/协议 | [backend-sse-contract.md](references/backend-sse-contract.md) |

@@ -1,4 +1,4 @@
-# AI Frontend Quality Skill · v1.4
+# AI Frontend Quality Skill · v1.4.1
 
 适合 Codex / Claude Code / Cursor（支持 Agent Skills 的运行方式）在开发或审查 AI 客户端与 Web 工作台时使用。
 
@@ -12,7 +12,7 @@ ai-frontend-quality/
 │   ├── requirements-and-component-choice.md
 │   ├── visual-polish.md
 │   ├── layout-and-responsive.md
-│   ├── mobile-touch-targets.md
+│   ├── pointer-hit-targets.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
 │   ├── backend-sse-contract.md
@@ -87,3 +87,7 @@ ai-frontend-quality/
 
 - 增加移动端适配参考：区分视觉范围和真实可点击范围，定位点击死区、透明层拦截与相邻控件误触。
 - 结合触控目标尺寸、滚动手势和键盘可达性检查；尺寸依据与视频观点分别标注来源。
+
+## v1.4.1 补充（桌面端点击区域）
+
+- 同一 reference 现覆盖桌面鼠标、触控板和移动触屏；检查视觉边界、hover、真实命中区及嵌套操作是否一致。
