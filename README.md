@@ -1,4 +1,4 @@
-# AI Frontend Quality Skill · v1.4.1
+# AI Frontend Quality Skill · v1.4.2
 
 适合 Codex / Claude Code / Cursor（支持 Agent Skills 的运行方式）在开发或审查 AI 客户端与 Web 工作台时使用。
 
@@ -91,3 +91,8 @@ ai-frontend-quality/
 ## v1.4.1 补充（桌面端点击区域）
 
 - 同一 reference 现覆盖桌面鼠标、触控板和移动触屏；检查视觉边界、hover、真实命中区及嵌套操作是否一致。
+
+## v1.4.2 补充（触觉反馈与统一加载）
+
+- 在命中区 reference 中加入离散事件的震动反馈、关闭与降级方式，并标明 Web API 的支持限制。
+- 在总原则中补充同一视图相关 skeleton 的统一释放和同步淡入淡出。

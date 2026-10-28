@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 在开发、审查或修复 React/Vue/AI Agent 客户端、工作台、聊天界面时使用。重点处理 UI/UX 组件选型（Tooltip/Toast/Snackbar/Dialog/Drawer/Sheet）、视觉质感、文字溢出、布局跳动、滚动条挤压、响应式缩放、React 重新渲染/重挂载、局部 Loading、SSE 生成中切换对话不中断、任务/服务器/UI 状态隔离、可访问性与前端验收。需求不明确时先判定是否需向用户确认，禁止凭个人偏好擅自修改重要交互。
 metadata:
-  version: '1.4.1'
+  version: '1.4.2'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
@@ -45,7 +45,7 @@ metadata:
 - **响应式并非浏览器 50% 缩放**：针对窗口与组件实际可用宽度设计降级（常驻侧栏→抽屉、两列→单列），不得无限压缩字体。
 - **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
 - **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
-- **异步加载与内容切换**：刷新或切换工作区时，先保留仍有效的旧内容；没有可用内容时尽早显示贴合实际布局的局部 skeleton。数据就绪后再替换，可用克制的淡入淡出衔接，但不延迟内容出现或用户操作；快速完成的请求避免闪一下 skeleton。遵循 `prefers-reduced-motion`。具体做法见 [visual-polish.md](references/visual-polish.md) 与 [Apple HIG 的 Loading、Motion 指南](references/sources.md)。
+- **异步加载与内容切换**：刷新或切换视图时，先保留仍有效的旧内容；没有可用内容时尽早显示贴合实际布局的局部 skeleton。同一视图中需要一起呈现的区域应由统一就绪状态释放骨架，并让内容同步、克制地淡入淡出，避免分批闪现或硬切；独立区域不必为此等待。快速完成的请求避免闪一下 skeleton，不延迟内容出现或用户操作，并遵循 `prefers-reduced-motion`。具体做法见 [visual-polish.md](references/visual-polish.md) 与 [Apple HIG 的 Loading、Motion 指南](references/sources.md)。
 - **不引入不必要依赖或大规模架构重写**；如确需新库/持久任务基础设施，说明引入理由与迁移成本。
 
 ## 扩展：新视频与 desktop-agent-ui（按需启用）
@@ -63,7 +63,7 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 | 需求含糊、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
 | 视觉层级、标题/副标题密度、暗色字重、流式淡入、数字、动效、异步内容切换 | [visual-polish.md](references/visual-polish.md) |
 | 文本撑宽、滚动条挤压、多栏布局、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
-| 桌面或移动端的点击死区、有效命中区与相邻控件误触 | [pointer-hit-targets.md](references/pointer-hit-targets.md) |
+| 桌面或移动端的点击死区、有效命中区、误触与移动端震动反馈 | [pointer-hit-targets.md](references/pointer-hit-targets.md) |
 | Reload / Remount / Re-render / Refetch、闪烁和丢状态 | [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md) + [examples/react-stability.tsx](examples/react-stability.tsx) |
 | 生成期间能切换、后台任务不断、断线恢复、竞争条件 | [async-nonblocking-ux.md](references/async-nonblocking-ux.md) + [examples/task-manager.ts](examples/task-manager.ts) + [examples/task-ui.tsx](examples/task-ui.tsx) |
 | FastAPI / SSE 任务持久化/协议 | [backend-sse-contract.md](references/backend-sse-contract.md) |
