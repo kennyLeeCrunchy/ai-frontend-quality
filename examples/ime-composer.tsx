@@ -4,16 +4,15 @@ import { useCallback, useRef, useState } from 'react';
 type Props = {
   onSend: (text: string) => void | Promise<void>;
   sendShortcut?: 'enter' | 'mod-enter';
+  /** 仅在目标输入法确有 compositionend 后额外 Enter 时启用；默认关闭。 */
+  postCompositionGuardMs?: number;
 };
 
 /**
- * 500ms is NOT a standard: sample here uses 120ms as a one-shot fallback,
- * only for anomalous keydown following compositionend.
- * Validate with target browser + Chinese/Japanese IMEs, adjust or disable.
+ * Post-composition guard is opt-in, only for a verified extra Enter after compositionend.
+ * Its duration is not a standard; measure with target browser and IME.
  */
-const POST_COMPOSITION_GUARD_MS = 120;
-
-export function IMESafeComposer({ onSend, sendShortcut = 'enter' }: Props) {
+export function IMESafeComposer({ onSend, sendShortcut = 'enter', postCompositionGuardMs = 0 }: Props) {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,18 +41,19 @@ export function IMESafeComposer({ onSend, sendShortcut = 'enter' }: Props) {
     const native = e.nativeEvent;
     if (composing.current || native.isComposing || native.keyCode === 229) return;
 
-    // Some IMEs fire an extra Enter immediately after compositionend.
+    const mod = e.metaKey || e.ctrlKey;
+    const shouldSend = sendShortcut === 'enter' ? !e.shiftKey && !mod : mod;
+    // 只有已验证需要短时防护时才拦截；显式 Ctrl/Cmd+Enter 不受影响。
     if (compositionEndedAt.current !== null) {
       const delta = performance.now() - compositionEndedAt.current;
       compositionEndedAt.current = null;
-      if (delta >= 0 && delta < POST_COMPOSITION_GUARD_MS && !e.shiftKey) {
+      if (postCompositionGuardMs > 0 && shouldSend && !mod &&
+          delta >= 0 && delta < postCompositionGuardMs) {
         e.preventDefault();
         return;
       }
     }
 
-    const mod = e.metaKey || e.ctrlKey;
-    const shouldSend = sendShortcut === 'enter' ? !e.shiftKey && !mod : mod;
     if (shouldSend) {
       e.preventDefault();
       submit();

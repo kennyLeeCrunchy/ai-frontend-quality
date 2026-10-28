@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 审查或改进 Web/AI 客户端的交互与稳定性，尤其是布局、响应式、加载反馈、聊天流状态和可访问性。纯后端任务不适用。
 metadata:
-  version: '1.4.4'
+  version: '1.4.5'
   origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
@@ -45,7 +45,7 @@ metadata:
 - **响应式并非浏览器 50% 缩放**：针对窗口与组件实际可用宽度设计降级（常驻侧栏→抽屉、两列→单列），不得无限压缩字体。
 - **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
 - **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
-- **异步加载与内容切换**：刷新或切换视图时，先保留仍有效的旧内容；没有可用内容时尽早显示贴合实际布局的局部 skeleton。同一视图中需要一起呈现的区域由统一就绪状态释放骨架；成功、空态或可展示的错误都应结束等待，慢请求须有恢复路径。内容可同步、克制地淡入淡出；独立区域不必等待。快速完成的请求避免闪一下 skeleton，不延迟内容出现或用户操作，并遵循 `prefers-reduced-motion`。具体做法见 [visual-polish.md](references/visual-polish.md) 与 [Apple HIG 的 Loading、Motion 指南](references/sources.md)。
+- **异步加载与内容切换**：保留仍适用的旧内容；否则显示贴合布局的局部 skeleton。需要一致呈现的区域统一释放并克制地淡入；空态和错误也应结束等待，独立区域不必阻塞。快速请求避免闪烁，遵循 `prefers-reduced-motion`。条件与恢复路径见 [visual-polish.md](references/visual-polish.md)，设计依据见 [sources.md](references/sources.md)。
 - **不引入不必要依赖或大规模架构重写**；如确需新库/持久任务基础设施，说明引入理由与迁移成本。
 
 ## 扩展：新视频与 desktop-agent-ui（按需启用）

@@ -17,7 +17,7 @@
 
 - 有效输入不应被截断，也不能在 `compositionend` 之前处理一个尚未确定的 draft。
 - Enter 发送时判断空文本、发送中的冲突策略、附件上传未完成状态。不要只在 keydown 判断，表单 onSubmit 也要遵守安全提交策略。
-- 参考 [`examples/ime-composer.tsx`](../examples/ime-composer.tsx)；它是独立 React 演示组件，不是所有 IME 的完备兼容证明。
+- 参考 [`examples/ime-composer.tsx`](../examples/ime-composer.tsx)；短时防护默认关闭，确认目标输入法确有额外 Enter 后再配置。这是独立 React 演示组件，不是所有 IME 的完备兼容证明。
 
 ## 2. 流式滚动必须尊重用户阅读意图
 

@@ -10,6 +10,7 @@ export function StreamingMessageViewport({ children, changeToken }: {
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const followRef = useRef(true);
+  const lastScrollTopRef = useRef(0);
   const [following, setFollowing] = useState(true);
 
   function setFollow(value: boolean) {
@@ -49,14 +50,15 @@ export function StreamingMessageViewport({ children, changeToken }: {
       <div
         ref={scrollRef}
         onWheel={(e) => { if (e.deltaY < 0) setFollow(false); }}
-        onTouchMove={() => {
-          // Touch direction can be inferred from scroll position on scroll event.
-        }}
         onScroll={(e) => {
-          // A programmatic scroll while following stays near bottom.
-          // Once user is away from bottom, keep follow paused until they return.
-          if (isNearBottom(e.currentTarget)) setFollow(true);
-          else if (followRef.current) setFollow(false);
+          const el = e.currentTarget;
+          const scrollingUp = el.scrollTop < lastScrollTopRef.current;
+          const scrollingDown = el.scrollTop > lastScrollTopRef.current;
+          lastScrollTopRef.current = el.scrollTop;
+          // 上滚即暂停；只有主动向下滚回底部或点击按钮才恢复跟随。
+          if (scrollingUp) setFollow(false);
+          else if (!followRef.current && scrollingDown && isNearBottom(el)) setFollow(true);
+          else if (followRef.current && !isNearBottom(el)) setFollow(false);
         }}
         style={{ overflowY: 'auto', minHeight: 0, height: '100%', scrollbarGutter: 'stable' }}
       >
