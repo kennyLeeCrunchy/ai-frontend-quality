@@ -2,8 +2,8 @@
 name: ai-frontend-quality
 description: 审查或改进 Web/AI 客户端的交互与稳定性，尤其是布局、响应式、加载反馈、聊天流状态和可访问性。纯后端任务不适用。
 metadata:
-  version: '1.4.5'
-  origin: '用户提供的四段 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
+  version: '1.4.6'
+  origin: '用户提供的 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
 ---
 # AI Frontend Quality — 设计选择、稳定性与异步 UX
 
@@ -62,7 +62,7 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 |---|---|
 | 需求含糊、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
 | 视觉层级、标题/副标题密度、暗色字重、流式淡入、数字、动效、异步内容切换 | [visual-polish.md](references/visual-polish.md) |
-| 文本撑宽、滚动条挤压、多栏布局、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
+| 文本撑宽、本地化长译文、RTL/双向文本、滚动条挤压、多栏布局、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
 | 桌面或移动端的点击死区、有效命中区、误触与移动端震动反馈 | [pointer-hit-targets.md](references/pointer-hit-targets.md) |
 | Reload / Remount / Re-render / Refetch、闪烁和丢状态 | [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md) + [examples/react-stability.tsx](examples/react-stability.tsx) |
 | 生成期间能切换、后台任务不断、断线恢复、竞争条件 | [async-nonblocking-ux.md](references/async-nonblocking-ux.md) + [examples/task-manager.ts](examples/task-manager.ts) + [examples/task-ui.tsx](examples/task-ui.tsx) |

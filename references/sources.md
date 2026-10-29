@@ -5,6 +5,7 @@
 1. Ludi《扒了大厂 AI 客户端源码，质感全靠这 5 招！》：surface 细微层次、暗色字体字重、流式文字淡入、数字/图标光学对齐、动作反馈。
 2. Ludi《弹窗家族》（2:44 录屏）：Bottom Sheet、Action Sheet、Snackbar、Alert Dialog 与移动端设计。
 3. Ludi《别再把弹出来的东西都叫弹窗了》（1:57 录屏）：Tooltip、Toast、Modal、Popconfirm、Drawer；避免草稿误关、可撤销优于无意义确认、危险按钮使用明确动词。
+4. Ludi《界面出海，按钮为什么总被外文撑爆？》（用户提供视频）：多语言文案长度差异、操作区弹性布局，以及阿拉伯语 RTL 页面方向适配。
 
 视频内容已经由用户提供的文件和上一轮总结整理；**本 Skill 不声称这些视频包含后端 taskId 设计、TanStack Query、SSE 断线恢复等工程实现**。后者是对后续讨论的补充方案。
 
@@ -27,6 +28,9 @@
 - Apple Human Interface Guidelines — Playing Haptics： https://developer.apple.com/design/human-interface-guidelines/playing-haptics
 - MDN Navigator.vibrate()： https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate
 - MDN CSS pointer-events： https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/pointer-events
+- MDN HTML `dir` 属性： https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/dir
+- MDN CSS 逻辑属性： https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Logical_properties_and_values
+- W3C HTML 中的 RTL 结构标记： https://www.w3.org/International/questions/qa-html-dir
 
 ## 适配提示
 
