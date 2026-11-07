@@ -1,13 +1,50 @@
-# AI Frontend Quality Skill · v1.4.6
+# AI Frontend Quality Skill
 
-适合 Codex / Claude Code / Cursor（支持 Agent Skills 的运行方式）在开发或审查 AI 客户端与 Web 工作台时使用。
+**English** | [简体中文](README.zh-CN.md)
 
-## 包内结构
+**Build AI-powered interfaces that stay responsive, stable, and usable while work happens in the background.**
+
+An open-source Agent Skill for designing, reviewing, and improving web and AI application frontends. It helps coding agents diagnose UI problems, choose appropriate interaction patterns, and implement changes without introducing unnecessary complexity.
+
+**Version:** 1.4.6 · **License:** MIT
+
+Designed for **Codex**, **Claude Code**, and **Cursor** when they support Agent Skills or an equivalent way to load local instructions. Exact installation and activation behavior depends on your agent version and configuration.
+
+## Why this skill?
+
+AI applications have UI challenges that go beyond ordinary loading spinners:
+
+- A streaming response should not block navigation or unrelated actions.
+- Switching conversations should not accidentally cancel a generation task.
+- Unmounting a component, disconnecting an SSE stream, and cancelling a backend task are different operations.
+- Re-renders, remounts, full-page reloads, and refetches have different causes and fixes.
+- Long text, localization, right-to-left layouts, sidebars, and scrollbars should not break the interface.
+- Component choices should follow user needs and risk—not a blanket rule to use modals, drawers, or animations.
+
+The skill emphasizes **understanding the requirement and identifying the root cause before modifying code**. It follows the host project's existing framework, design system, accessibility requirements, and architectural constraints.
+
+## What it covers
+
+| Area | Guidance |
+| --- | --- |
+| Requirements and interaction choices | Decide when to ask clarifying questions; choose between dialogs, drawers, bottom sheets, inline feedback, undo, and other patterns. |
+| Async and non-blocking UX | Scope loading and disabled states correctly; keep unrelated UI interactive; select task lifecycle designs proportionate to the app. |
+| AI chat and streaming | Handle SSE subscriptions, background generation, conversation switching, stale responses, retries, and task cancellation semantics. |
+| Rendering and state | Distinguish reload, remount, re-render, and refetch; maintain stable identity and state ownership. |
+| Layout and responsive design | Handle shrinking flex/grid children, text overflow, scrollbars, sidebars, localization, and RTL/bidirectional text. |
+| Desktop and mobile interactions | Address input-method composition, scroll-follow behavior, pointer hit targets, resizable panels, and desktop window details. |
+| Visual polish | Improve hierarchy, loading transitions, spacing, borders, motion, and reduced-motion support without imposing a visual style. |
+| Verification | Choose focused regression checks, relevant viewport/input conditions, and evidence-based diagnostics. |
+
+**Scope:** Frontend design, implementation, and review for web apps, AI chat clients, and agent workspaces. It is **not** intended for unrelated backend-only tasks.
+
+## Package structure
 
 ```text
 ai-frontend-quality/
-├── SKILL.md                   # 激活条件、流程、强制原则、按需索引
-├── README.md                  # 安装与使用
+├── SKILL.md                        # Activation criteria, workflow, and core principles
+├── README.md                       # Installation and usage guide
+├── README.zh-CN.md                 # Chinese installation and usage guide
 ├── references/
 │   ├── requirements-and-component-choice.md
 │   ├── visual-polish.md
@@ -37,84 +74,109 @@ ai-frontend-quality/
     └── audit-ui.py
 ```
 
-## 首次安装与升级
+The `references/` files are loaded selectively for the task. The `examples/` files are **adaptable reference implementations**, not a ready-to-run application or drop-in production components.
 
-1. 首次安装：解压 ZIP，保留整个 `ai-frontend-quality` 文件夹结构（不要只拿 SKILL.md；references 和 examples 会一起被引用）。目标位置已有同名目录时，先确认它是已有安装还是本地修改版，不直接叠加文件。
-2. 升级已有安装：先备份需要保留的本地修改，再用新版 `ai-frontend-quality/` **替换整个旧目录**，避免旧 references 或 examples 残留；同一作用域只保留一份同名 Skill。
-3. 根据所用 Agent，放到相应 Skills 目录。可直接把 ZIP 发给 Codex/Claude Code，让它代为安装或升级并确认已识别。
-   - Codex 项目级：`项目/.agents/skills/ai-frontend-quality/SKILL.md`。部分版本还采用 `.codex/skills` 或用户目录 `$CODEX_HOME/skills`；具体以当前 Codex 安装/文档为准，不要重复安装同名两份。
-   - Claude Code 项目级：`项目/.claude/skills/ai-frontend-quality/SKILL.md`。
-   - Claude Code 用户级：`~/.claude/skills/ai-frontend-quality/SKILL.md`（Windows 一般为 `%USERPROFILE%\.claude\skills\ai-frontend-quality\SKILL.md`）。
-   - Cursor：若环境可读取 Agent Skills，可放在它支持的 Skills 目录；否则把 `SKILL.md` 作为规则入口并保持相对引用可读，不应假设任何 Cursor 版本自动支持相同路径。
-4. 重启会话或触发 Skills 重新扫描。在新会话中要求 Agent 检查能否读取此 SKILL.md 与一个 reference 文件。
+## Installation
 
-## 让 Agent 自己装（推荐）
+### 1. Download the skill
 
-将压缩包交给编码 Agent，然后说：
+Download the repository ZIP or clone the repository. Keep the **entire `ai-frontend-quality/` folder** intact, including `references/`, `examples/`, and `scripts/`. Copying only `SKILL.md` will break its relative references.
 
-> 把这个 `ai-frontend-quality` Skill 按当前环境支持的项目级路径安装；如果是在升级已有同名 Skill，先备份本地修改，再用新版整个目录替换旧目录。保留 references/examples/scripts 全部文件，验证 frontmatter 和引用路径可读，随后对当前项目做一次诊断式 UI/UX 审查。
+### 2. Place it in your agent's skill directory
 
-## 使用示例
+Common project-level locations:
 
-- “按 ai-frontend-quality 审查多栏工作台的文字溢出和侧栏挤压。”
-- “切换对话时 SSE 经常中断，诊断并修复，不要影响其他对话。”
-- “需求不明确时先跟我确认应该用 Drawer、Modal 还是独立页面。”
-- “AI 生成过程中全屏 Loading，改为局部非阻塞交互，并补回归测试。”
-- “检查德语长按钮文案和阿拉伯语 RTL 下的结账页布局，修复溢出与方向错乱。”
-- “参考 Ludi 的五个视觉质感要点，但不要改变已有品牌风格。”
+| Agent | Example location |
+| --- | --- |
+| Codex | `<project>/.agents/skills/ai-frontend-quality/SKILL.md` |
+| Claude Code | `<project>/.claude/skills/ai-frontend-quality/SKILL.md` |
+| Cursor | A supported Agent Skills directory, if available in your version |
 
-## 备注
+For Claude Code user-level installation, a common location is `~/.claude/skills/ai-frontend-quality/SKILL.md` (on Windows, `%USERPROFILE%\.claude\skills\ai-frontend-quality\SKILL.md`). Codex configurations may also use `$CODEX_HOME/skills` or a version-specific directory. Follow your installed agent's current documentation; avoid installing duplicate copies with the same skill name at the same scope.
 
-- `examples/` 是 **参考代码**，不是无需调整就能集成的完整项目；其中 FastAPI 端点合约为伪代码。
-- `scripts/audit-ui.py` 只是寻找可疑写法的静态扫描器，不能替代 DevTools/Profiler 的根因诊断。
-- Skill 本身只是行为指引，不会在代码或浏览器层面强制拦截开发行为。
+If Cursor does not automatically discover Agent Skills in your setup, you may load `SKILL.md` through its supported rules/instructions mechanism, while preserving the relative reference paths.
 
-## v1.1 新增内容（作者新视频与开源 Skill）
+### 3. Verify discovery
 
-- IME 组字安全发送、正在输出时尊重滚动阅读意图。
-- 避免多重可见描边、同心圆角、文件名后缀始终可辨。
-- 可拖拽分屏：比例/最小宽度、键盘控制、Escape 取消、折叠与恢复。
-- 桌面应用专属：阴影裁切、Scroll-Driven Animations、多窗口状态边界；这些都是**按需使用**，不是所有 Web 项目强制加入。
-- 对作者 500ms IME、CSS 0% CPU、clip-audit 零告警等主张做了适用条件与验证提醒。原始仓库及 MIT 许可见 [Ludi-Herry/desktop-agent-ui](https://github.com/Ludi-Herry/desktop-agent-ui)，本包不包含其原版脚本。
+Restart the agent session or trigger a skills refresh, then ask it to confirm that it can read `SKILL.md` and one file from `references/`.
 
-作者原版 `desktop-agent-ui` 也可以作为单独 Skill 安装，但建议避免在同一任务里强制加载两份互相重叠的规则。
+### Updating an existing installation
 
-## v1.3 新增内容（异步加载与内容切换）
+Back up any local changes, then **replace the entire existing skill directory** with the new version. Do not merge ZIP contents into an older copy: outdated references or examples may otherwise remain. Keep only one copy of the skill in the same scope.
 
-- 刷新、切换工作区时优先保留仍有效的内容；必要时尽早展示贴合布局的局部 skeleton。
-- 内容就绪后可用克制的淡入淡出衔接，不阻塞操作；快速请求避免闪烁，并遵循 `prefers-reduced-motion`。
-- 补充 Apple HIG Loading 与 Motion 官方参考，并注明动效时长属于项目验证项，不是 Apple 规定值。
+## Let your coding agent install it
 
-## v1.4 新增内容（移动端点击区域）
+You can attach the ZIP to a coding agent and use this prompt:
 
-- 增加移动端适配参考：区分视觉范围和真实可点击范围，定位点击死区、透明层拦截与相邻控件误触。
-- 结合触控目标尺寸、滚动手势和键盘可达性检查；尺寸依据与视频观点分别标注来源。
+> Install the `ai-frontend-quality` skill at the project-level path supported by this environment. If an older copy exists, back up any local modifications and replace the entire skill directory. Preserve `SKILL.md`, `references/`, `examples/`, and `scripts/`. Verify the frontmatter and relative reference paths, then perform a diagnostic UI/UX review of the current project. Do not make unrelated changes.
 
-## v1.4.1 补充（桌面端点击区域）
+## Example prompts
 
-- 同一 reference 现覆盖桌面鼠标、触控板和移动触屏；检查视觉边界、hover、真实命中区及嵌套操作是否一致。
+- "Use `ai-frontend-quality` to review overflow and sidebar compression in this multi-panel workspace."
+- "Switching conversations sometimes interrupts an SSE response. Diagnose the lifecycle and fix it without blocking other chats."
+- "Before deciding between a drawer, modal, or separate page, ask me only the questions that materially affect the interaction."
+- "Replace the full-screen loading lock during AI generation with appropriately scoped, non-blocking feedback and focused regression tests."
+- "Check this checkout UI with long German translations and Arabic RTL content, then fix overflow and directionality issues."
+- "Apply the relevant UI-detail guidance while preserving the product's existing brand style."
 
-## v1.4.2 补充（触觉反馈与统一加载）
+## Design principles
 
-- 在命中区 reference 中加入离散事件的震动反馈、关闭与降级方式，并标明 Web API 的支持限制。
-- 在总原则中补充同一视图相关 skeleton 的统一释放和同步淡入淡出。
+1. **Local busy state ≠ global lock.** Disable only actions that genuinely conflict with the operation in progress.
+2. **UI lifecycle ≠ task lifecycle.** Unsubscribing from a stream must not implicitly cancel the backend job. Reliable execution across refreshes or devices requires backend support.
+3. **Diagnose before optimizing.** A re-render, remount, reload, and refetch are not interchangeable.
+4. **Preserve stable state and identity.** Separate UI state, server state, and task state; use stable business IDs as keys; prevent stale results from overwriting newer state.
+5. **Respect user intent.** Do not hijack the scroll position while the user reads earlier messages; avoid sending messages during IME composition; allow collapsed layouts to be restored.
+6. **Prefer proportional solutions.** Do not introduce distributed task infrastructure for a simple button spinner, or large new dependencies for a small UI fix.
+7. **Validate in context.** Test the actual input method, viewport, task state, accessibility behavior, and project constraints that matter to the change.
 
-## v1.4.3 修订（审查反馈）
+## Important limitations
 
-- 统一加载补上空态、错误与慢请求的退出路径；简单界面修复按需选择步骤，任务复杂度分档只用于异步任务。
-- 修正任务示例中的重试幂等键与用户可见错误文案；静态扫描器遍历时跳过依赖和构建目录。
+- This is a **guidance skill**, not a runtime guardrail. It cannot enforce correct behavior in a browser or application by itself.
+- `scripts/audit-ui.py` is a lightweight static heuristic scanner. Its warnings are prompts for investigation, not confirmed root causes; use appropriate browser tools and profilers to verify issues.
+- Files under `examples/` illustrate patterns and require adaptation. Some FastAPI/SSE contract examples are pseudocode, and some Playwright cases describe verification work rather than supplying a complete runnable test suite.
+- UI durations, visual tokens, and patterns referenced from videos or open-source projects are **starting points**, not universal standards. Honor accessibility and `prefers-reduced-motion`.
+- The package discusses the open-source [Ludi-Herry/desktop-agent-ui](https://github.com/Ludi-Herry/desktop-agent-ui) work and its MIT license. **It does not bundle the author's original scripts.** If using that skill separately, avoid imposing two overlapping rule sets on the same task without reconciling them.
 
-## v1.4.4 修订（文件与契约审查）
+## Release notes
 
-- 缩短 skill 触发描述；其余示例统一安全错误文案。
-- 取消任务示例处理服务端 `cancel_requested` 并展示等待终态；未实现的 Playwright 占位场景改为待验收清单。
+**v1.4.6 — Localization and RTL layouts**
+- Added rules for long translations, flexible sizing, and testing with the longest relevant content.
+- Added RTL and bidirectional-text checks, CSS logical properties, and links to MDN/W3C references.
 
-## v1.4.5 修订（规则与示例一致性）
+**v1.4.5 — Consistent examples and installation**
+- Clarified when scroll-follow should resume after users scroll away from the latest message.
+- Made the optional post-IME composition guard opt-in pending testing with target input methods.
+- Distinguished fresh installations from upgrades and recommended replacing the complete folder.
 
-- 上滚后只在用户滚回底部或点击回底按钮时恢复跟随；IME 组字后短时拦截默认关闭，按目标输入法验证后启用。
-- 入口精简 skeleton 原则，细节留在 reference；安装说明区分首次安装与升级，升级替换整个目录。
+**v1.4.4 — Contract and example review**
+- Streamlined skill activation text and standardized safe error messaging.
+- Improved cancellation-state handling in task examples and replaced incomplete Playwright placeholders with acceptance checklists.
 
-## v1.4.6 新增内容（本地化与 RTL 布局）
+**v1.4.3 — Rules and examples review**
+- Clarified loading exit paths for empty, error, and slow-request states.
+- Kept simple UI fixes lightweight; reserved task-complexity tiers for asynchronous workflows.
+- Improved retry/idempotency examples and excluded build/dependency folders from the static scanner.
 
-- 补充长译文下的弹性尺寸与实际最长文案验收原则，避免原语言固定宽度导致关键操作溢出。
-- 补充 RTL/双向文本方向、CSS 逻辑属性和混排内容检查，并链接 MDN/W3C 参考。
+**v1.4.2 — Haptics and coordinated loading**
+- Added optional haptic feedback guidance and browser-support caveats.
+- Clarified coordinated skeleton release for related UI regions.
+
+**v1.4.1 — Desktop pointer targets**
+- Extended hit-target guidance to mouse and trackpad interactions as well as touchscreens.
+
+**v1.4 — Mobile hit targets**
+- Added guidance on actual clickable areas, overlapping hit regions, accidental touches, and touch ergonomics.
+
+**v1.3 — Async loading and content transitions**
+- Prioritized preserving valid existing content and using layout-matched local skeletons where needed.
+- Added restrained content transitions, fast-request flicker avoidance, and reduced-motion guidance.
+
+**v1.1 — Desktop chat microinteractions**
+- Added IME-safe sending, streaming scroll behavior, restrained borders, concentric corners, filename suffix preservation, and restorable split panes.
+- Added desktop window and multi-window guidance with explicit cautions about unverified performance and behavior claims.
+
+## License and attribution
+
+Released under the [MIT License](LICENSE). See [sources.md](references/sources.md) for design and engineering references and [ludi-review-and-safety-notes.md](references/ludi-review-and-safety-notes.md) for implementation caveats and attribution notes.
+
+**Source repository:** https://github.com/kennyLeeCrunchy/ai-frontend-quality
