@@ -44,6 +44,7 @@ metadata:
 - **标题层级保持克制**：避免 eyebrow、标题、副标题与辅助说明层层堆叠；只有当副标题补充了标题未表达的信息时才保留，避免重复释义或为填充版面硬加文案。详见 [visual-polish.md](references/visual-polish.md)。
 - **响应式并非浏览器 50% 缩放**：针对窗口与组件实际可用宽度设计降级（常驻侧栏→抽屉、两列→单列），不得无限压缩字体。
 - **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
+- **布尔设置必须用开关（Switch）**。可在当前界面直接开启或关闭的设置，必须用持续显示当前状态的开关。禁止用「开启 X／关闭 X」之类的普通动作按钮代替。详见 [组件选型](references/requirements-and-component-choice.md#布尔设置使用开关)。
 - **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
 - **异步加载与内容切换**：保留仍适用的旧内容；否则显示贴合布局的局部 skeleton。需要一致呈现的区域统一释放并克制地淡入；空态和错误也应结束等待，独立区域不必阻塞。快速请求避免闪烁，遵循 `prefers-reduced-motion`。条件与恢复路径见 [visual-polish.md](references/visual-polish.md)，设计依据见 [sources.md](references/sources.md)。
 - **不引入不必要依赖或大规模架构重写**；如确需新库/持久任务基础设施，说明引入理由与迁移成本。
@@ -60,7 +61,7 @@ Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，�
 
 | 需要解决的问题 | 仅读取必要文件 |
 |---|---|
-| 需求含糊、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
+| 需求含糊、布尔设置、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
 | 视觉层级、标题/副标题密度、暗色字重、流式淡入、数字、动效、异步内容切换 | [visual-polish.md](references/visual-polish.md) |
 | 文本撑宽、本地化长译文、RTL/双向文本、滚动条挤压、多栏布局、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
 | 桌面或移动端的点击死区、有效命中区、误触与移动端震动反馈 | [pointer-hit-targets.md](references/pointer-hit-targets.md) |
