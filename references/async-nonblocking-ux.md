@@ -41,6 +41,15 @@ created → queued → running/streaming → succeeded
 
 可增加 reconnecting、retryable_failed（这是连接/投递状态，不要与任务业务结果混淆）。所有事件必须指向唯一 `taskId`，最好有单调递增 `sequence`。消费方须去重，并防止迟来的旧事件覆盖新状态。
 
+## 面向用户的进度与反馈
+
+- 只有在有可测量的总量和完成量时才展示百分比，例如文件上传。无法估计时，用实际任务阶段或不定进度指示器，例如「排队中」「正在生成」。阶段文案以真实事件为依据。
+- 区分任务状态和连接状态。流连接暂时断开时可提示「正在重连」；已受理的取消显示「停止中」，确认任务取消后才显示「已停止」。
+- 失败、超时或部分完成时，在受影响区域说明发生了什么、草稿或已有输出是否保留，以及适用的下一步，例如重试或查看已有结果。
+- 流式界面让普通状态变化可被读屏感知且不移动焦点，例如用独立的 `role="status"` 区域提示重连、完成或失败。将频繁更新的正文与状态区分开，避免每个 token 都触发播报。
+
+参考 [Apple HIG · Progress indicators](https://developer.apple.com/design/human-interface-guidelines/progress-indicators)、[Apple HIG · Feedback](https://developer.apple.com/design/human-interface-guidelines/feedback) 与 [W3C 状态消息](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html)。
+
 ## SSE：事件订阅 vs 生成任务
 
 ```text
@@ -74,6 +83,11 @@ useEffect(() => {
 ```
 
 **替代方向**：连接由应用级任务管理器拥有；React 页面订阅数据、解除订阅只释放 UI listener。任务取消需要独立明确的 API。单靠取消 UI listener 不会终止服务端任务。
+
+## 参考实现
+
+- [任务管理器](../examples/task-manager.ts) 演示按任务跟踪状态、订阅与取消。
+- [任务界面](../examples/task-ui.tsx) 演示会话内局部状态、草稿保留、重试与停止入口。接口契约按项目适配。
 
 ## 适配与不要过度工程
 

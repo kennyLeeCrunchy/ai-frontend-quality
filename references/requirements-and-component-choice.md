@@ -34,8 +34,7 @@
 | Modal/Dialog | 需要暂时集中注意力的短任务 | 保留草稿；遮罩/Esc 导致丢失前要防护 |
 | AlertDialog | 永久删除等不可逆/高风险 | 后果、对象、不可逆性、明确动词 |
 | Drawer | 复杂详情、边参照列表边编辑 | 过窄时改全屏或独立页；正确管理焦点 |
-| Bottom Sheet | 移动端从底部展开内容 | 避免与内部滚动/软键盘/安全区冲突 |
-| Action Sheet | 移动端上下文动作菜单 | 是“动作集合”而不是“任何底部面板” |
+| 移动端面板与动作菜单 | 底部内容面板、上下文动作菜单 | 见 [移动端面板与动作菜单](mobile-touch-and-motion.md#移动端面板与动作菜单) |
 | Inline Field Error | 输入字段校验失败 | 字段邻近关联 `aria-describedby` |
 | Lightbox | 放大预览图片/媒体 | 清楚退出、快捷键、焦点与关闭后返回 |
 
@@ -44,6 +43,46 @@
 - 用固定标签命名设置，例如「显示底部面板」，由滑块位置清楚表达开关状态。优先复用已有 Switch，确保键盘可操作、读屏可读到状态。参考 [W3C Switch Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/)。
 - 设置项能直接修改时，禁止用动作按钮代替开关。设置只能在系统页面修改时，单独展示能读到的当前状态，并用「前往系统设置」链接或按钮导航。
 - 判断依据是功能是否开启。两个命名选项（例如「浅色／深色」）用单选或分段控件。
+
+## 设置的位置与保存反馈
+
+- 影响当前视图或任务的选项放在对应界面，例如在面板附近提供显示控制。跨页面、低频修改的偏好集中到应用设置。
+- 异步保存失败时，让开关恢复到最近确认的状态，并在设置项附近说明失败及可用操作。若请求超时且是否保存成功未知，先核对实际状态再确认结果。
+
+参考 [Apple HIG · Settings](https://developer.apple.com/design/human-interface-guidelines/settings)。
+
+## 焦点与替代操作
+
+- 模态打开后将焦点移入并限制在对话框内，关闭后还给触发控件。若原控件已删除或隐藏，将焦点移到逻辑上的后续位置，例如同列表的下一项。非模态面板保留页面原有的键盘操作路径。
+- 为依赖拖拽的关键操作提供可点击且键盘可用的替代入口。例如拖入文件区旁提供「选择文件」，拖拽排序提供「上移／下移」。
+
+参考 [Apple HIG · Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility)、[W3C 模态框模式](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) 与 [W3C 拖拽替代操作](https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html)。
+
+## 表单填写与纠错
+
+- 用持续可见的字段标签说明输入内容，并与控件建立关联。placeholder 用于展示例子，关键格式要求保留在字段附近。
+- 根据字段选择校验时机。邮箱等格式适合在离开字段或提交时校验，避免输入尚未完成就报错。用户修改已报错的字段时，适时更新反馈。
+- 提交失败后保留已填内容。字段错误就地说明原因和改法，并关联错误文案。比如「请输入公司邮箱，例如 name@example.com」。无法关联到单个字段的错误放在表单提交区附近，并说明下一步。
+
+参考 [Apple HIG · Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields) 和 [Entering data](https://developer.apple.com/design/human-interface-guidelines/entering-data)。
+
+**参考 HTML（字段校验失败时）**
+
+```html
+<label for="work-email">工作邮箱</label>
+<input id="work-email" name="workEmail" type="email" autocomplete="email"
+       aria-invalid="true" aria-describedby="work-email-error">
+<p id="work-email-error">请输入公司邮箱，例如 name@example.com。</p>
+```
+
+用户修正后，更新字段的无效状态和错误描述。字段的当前值由表单状态保留。
+
+## 按钮层级与可发现性
+
+- 同一组操作里，用明显的样式突出最常用或最合理的下一步。例如编辑表单突出「保存」，「取消」用次要样式。具有同等重要性的选择使用相近的视觉权重。
+- 图标含义不直观时加短标签。纯图标按钮提供可访问名称。重要操作也要有可见、可用键盘打开的入口，例如「重命名」同时出现在右键菜单和行内「更多」里。
+
+参考 [Apple HIG · Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons) 和 [Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)。
 
 ## 三个典型误用
 

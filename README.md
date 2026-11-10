@@ -2,11 +2,11 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-**Build AI-powered interfaces that stay responsive, stable, and usable while work happens in the background.**
+**Design and build web, desktop, and AI interfaces that stay clear, responsive, and stable.**
 
 An open-source Agent Skill for designing, reviewing, and improving web and AI application frontends. It helps coding agents diagnose UI problems, choose appropriate interaction patterns, and implement changes without introducing unnecessary complexity.
 
-**Version:** 1.4.6 · **License:** MIT
+**Version:** 1.5.0 · **License:** MIT
 
 Designed for **Codex**, **Claude Code**, and **Cursor** when they support Agent Skills or an equivalent way to load local instructions. Exact installation and activation behavior depends on your agent version and configuration.
 
@@ -21,19 +21,21 @@ AI applications have UI challenges that go beyond ordinary loading spinners:
 - Long text, localization, right-to-left layouts, sidebars, and scrollbars should not break the interface.
 - Component choices should follow user needs and risk—not a blanket rule to use modals, drawers, or animations.
 
-The skill emphasizes **understanding the requirement and identifying the root cause before modifying code**. It follows the host project's existing framework, design system, accessibility requirements, and architectural constraints.
+The skill emphasizes **understanding the requirement and identifying the root cause before modifying code**. It works within the project's design and accessibility requirements and helps agents explain when a requested change warrants a broader redesign.
 
 ## What it covers
 
 | Area | Guidance |
 | --- | --- |
-| Requirements and interaction choices | Decide when to ask clarifying questions; choose between dialogs, drawers, bottom sheets, inline feedback, undo, and other patterns. |
+| Navigation, search, and empty states | Make destinations, search scope, filters, and recovery actions easy to find. |
+| Forms and interaction choices | Choose controls by task, use switches for directly editable on/off settings, and preserve input when validation fails. |
 | Async and non-blocking UX | Scope loading and disabled states correctly; keep unrelated UI interactive; select task lifecycle designs proportionate to the app. |
 | AI chat and streaming | Handle SSE subscriptions, background generation, conversation switching, stale responses, retries, and task cancellation semantics. |
 | Rendering and state | Distinguish reload, remount, re-render, and refetch; maintain stable identity and state ownership. |
 | Layout and responsive design | Handle shrinking flex/grid children, text overflow, scrollbars, sidebars, localization, and RTL/bidirectional text. |
-| Desktop and mobile interactions | Address input-method composition, scroll-follow behavior, pointer hit targets, resizable panels, and desktop window details. |
-| Visual polish | Improve hierarchy, loading transitions, spacing, borders, motion, and reduced-motion support without imposing a visual style. |
+| Desktop interactions | Cover IME composition across languages, scroll-follow behavior, pointer hit targets, and resizable panels. |
+| Mobile interactions | Cover touch targets, gestures, bottom sheets, haptics, and interruptible spring motion. |
+| Visual design | Use restrained headings, smooth corners, semantic theme colors, and appropriate motion. |
 | Verification | Choose focused regression checks, relevant viewport/input conditions, and evidence-based diagnostics. |
 
 **Scope:** Frontend design, implementation, and review for web apps, AI chat clients, and agent workspaces. It is **not** intended for unrelated backend-only tasks.
@@ -46,10 +48,12 @@ ai-frontend-quality/
 ├── README.md                       # Installation and usage guide
 ├── README.zh-CN.md                 # Chinese installation and usage guide
 ├── references/
+│   ├── navigation-search-and-empty-states.md
 │   ├── requirements-and-component-choice.md
 │   ├── visual-polish.md
 │   ├── layout-and-responsive.md
 │   ├── pointer-hit-targets.md
+│   ├── mobile-touch-and-motion.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
 │   ├── backend-sse-contract.md
@@ -57,6 +61,7 @@ ai-frontend-quality/
 │   ├── desktop-chat-microinteractions.md
 │   ├── desktop-resizable-and-shell.md
 │   ├── ludi-review-and-safety-notes.md
+│   ├── specialized-page-patterns.md
 │   └── sources.md
 ├── examples/
 │   ├── workspace-layout.css
@@ -74,7 +79,7 @@ ai-frontend-quality/
     └── audit-ui.py
 ```
 
-The `references/` files are loaded selectively for the task. The `examples/` files are **adaptable reference implementations**, not a ready-to-run application or drop-in production components.
+Start with [SKILL.md](SKILL.md) and open the reference for the task at hand. References include short snippets and link to longer, adaptable implementations in `examples/`.
 
 ## Installation
 
@@ -138,6 +143,16 @@ You can attach the ZIP to a coding agent and use this prompt:
 - The package discusses the open-source [Ludi-Herry/desktop-agent-ui](https://github.com/Ludi-Herry/desktop-agent-ui) work and its MIT license. **It does not bundle the author's original scripts.** If using that skill separately, avoid imposing two overlapping rule sets on the same task without reconciling them.
 
 ## Release notes
+
+**v1.5.0 — Frontend guidance by scenario**
+
+A shorter entry point keeps core rules visible and routes each task to focused guidance, examples, and checks.
+
+- **Everyday UI:** Cover navigation, search and filters, empty states, form recovery, button hierarchy, settings, and accessible focus. Use switches for directly editable on/off settings.
+- **Responsive and accessible feedback:** Add explicit multilingual and RTL navigation, toolbar overflow, semantic theme colors, truthful progress, and screen-reader-friendly status updates.
+- **Desktop and mobile:** Apply IME rules across languages. Group mobile touch targets, gestures, bottom sheets, haptics, and interruptible spring motion in one reference.
+- **Visual consistency:** Keep subtitles for information the heading does not already convey. Document continuous corners using Apple and Figma references, with a progressive enhancement path for the web.
+- **Scope and examples:** Reuse existing patterns for small changes, allow requested refactors, and explain technology tradeoffs when the current stack limits a new feature. Keep short examples with their rules and link to longer implementations when needed.
 
 **v1.4.6 — Localization and RTL layouts**
 - Added rules for long translations, flexible sizing, and testing with the longest relevant content.

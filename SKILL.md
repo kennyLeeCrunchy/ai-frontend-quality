@@ -1,87 +1,45 @@
 ---
 name: ai-frontend-quality
-description: 审查或改进 Web/AI 客户端的交互与稳定性，尤其是布局、响应式、加载反馈、聊天流状态和可访问性。纯后端任务不适用。
+description: 设计、实现或审查 Web 与桌面客户端的界面和交互。适用于组件选型、页面导航、视觉层级、响应式、表单与可访问性，也适用于前端渲染、异步任务和 AI 聊天流。纯后端任务不适用。
 metadata:
-  version: '1.4.6'
-  origin: '用户提供的 Ludi UI 视频、开源 desktop-agent-ui 与后续工程讨论'
+  version: '1.5.0'
 ---
-# AI Frontend Quality — 设计选择、稳定性与异步 UX
+# AI Frontend Quality
 
-## 定位
+## 工作方式
 
-面向具有真实用户与动态内容的 Web/AI 客户端。**先判断需求和根因，再选组件/改代码；不是不分场景地给 UI 加动效或盲目搬运参考代码。** 以项目既有框架、设计系统、无障碍和业务约束为优先。
+1. 先确认用户要完成的任务、目标设备和现有设计系统。只有选项会明显改变交互、数据风险或任务行为，且无法从项目判断时，才问具体问题。
+2. 按下表打开相关文档和小节。修复问题时先用复现、DOM、网络或状态证据定位原因，再选择改法。
+3. 按任务范围决定复用程度。局部修改优先沿用现有实现。用户要求重构时，可沿用项目当前技术栈，按需求决定哪些组件、样式和状态机制保留，哪些重新设计。若新功能受当前技术栈限制，可向用户提议更换技术栈，说明预期收益、沿用现有技术栈的替代方案和迁移成本，由用户决定是否更换。
+4. 验证受影响的关键路径，包括实际内容、视口、输入方式和状态。汇报改动依据与已验证的结果。
 
-触发：前端功能设计、视觉优化、组件/弹窗选择、UI 审查；页面错位、文字撑破布局、滚动条挤动、响应式/缩放问题；切换页面后状态丢失、全屏 Loading、AI SSE 流断开、无谓 Refetch 或渲染闪烁。
+## 通用规则
 
-不触发：纯后端重构、与 UI 无关的服务端算法或纯静态文案润色（除非用户明确请求前端体验优化）。
+- **标题层级保持克制**。避免眉题（eyebrow）、标题、副标题（subtitle）与辅助说明层层堆叠。只有当副标题补充了标题未表达的信息时才保留。
+- **布尔设置必须用开关（Switch）**。可在当前界面直接开启或关闭的设置，必须用持续显示当前状态的开关。禁止用「开启 X／关闭 X」之类的普通动作按钮代替。
+- **按任务语义选组件**。用可撤销性、风险和工作上下文判断是否需要中断用户。保护已填内容，保证关键操作可用键盘完成，状态不能只靠颜色或动效表达。
+- **按实际空间做响应式**。给内容可收缩和可滚动的边界，按可用空间调整布局。保留文字可读性、操作入口和焦点。
+- **反馈如实，忙碌局部化**。只限制与当前操作冲突的区域。界面卸载、停止订阅和取消业务任务分别处理。用真实状态决定进度、完成、失败和恢复提示。
+- **避免盲从参数**。可联网查阅设计指南和实现案例，参考颜色、字重、尺寸与动效参数，再用真实内容和设备验证。动效的幅度和时长按功能用途与用户偏好决定，兼顾可读性和性能，并尊重系统的「减少动态效果」设置。
 
-## 按问题选择工作步骤
+## 按前端场景查找
 
-1. **理解任务和界面**：只读与问题相关的组件、状态、样式和项目规范；需要时再查看路由、请求与测试。没有代码则输出设计建议与*明确标注的示意实现*，不得装作已经改好。
-2. **需求门槛：判断是否必须问用户**：在选择对话框/抽屉/撤销、移动端交互、任务跨页面继续运行、信息布局变化等方案前，确认用户目标、风险、是否可撤销、内容量、所需上下文、目标设备、已有规范。
-   - **会产生明显不同交互或影响数据安全，而现有信息无法推断时**：先用最多 1–3 个具体的、可回答的问题征询用户；给出可选方案和权衡，不用“你喜欢哪种”这种空问法。
-   - **需求已经明确或改动低风险可逆时**：不要机械地询问；陈述假设并直接开展最小可行修改。
-   - 用户明确授权自行决策时依风险、已有设计系统与一致性选择，并说明理由；不能默许高风险操作。
-   - 参考 [requirements-and-component-choice.md](references/requirements-and-component-choice.md)。
-3. **诊断与分类**：只排查与现象有关的布局、滚动、视觉、渲染、请求或任务生命周期问题；用证据排除猜测。按需参考 [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md)、[layout-and-responsive.md](references/layout-and-responsive.md)。
-4. **涉及异步任务与状态生命周期时，再选复杂度档位**：
-   - S：组件内部状态、局部 Loading、基础响应式；适合简单页面。
-   - M：路由外任务管理器、TanStack Query/现有缓存、并发互不阻塞、避免组件卸载取消流；适合多对话 SPA。
-   - L：服务端持久任务 ID、事件序列/重放、任务恢复/worker、幂等及并发版本控制；适合长耗时 AI Agent、多端/断线恢复。
-   - 绝不把 L 档作为所有按钮 Loading 的默认解决方案。参考 [async-nonblocking-ux.md](references/async-nonblocking-ux.md)。
-5. **小步实施**：复用现有组件，优先修正错误边界与状态归属，严禁以 `overflow:hidden`、缩小所有文字、统一 `pointer-events:none` 掩盖问题；重要视觉改动提供前后对照。
-6. **验证**：选择与改动直接相关的内容、尺寸、输入方式和异步状态；仅为具体风险扩大范围。需要时用性能/网络工具验证根因，参考 [verification-matrix.md](references/verification-matrix.md)。
-7. **汇报**：简述发现、改动和有意义的验证；只有影响判断的限制或风险才展开说明。
+表内链接是入口。只读与当前任务相关的文档或小节。短示例放在对应小节，较长的示例由该文档链接，涉及实现时再打开。
 
-## 不可违反的原则
-
-- **局部忙 ≠ 全局不可操作**。Loading/Disabled 的作用域必须与真实依赖冲突一致；只能阻断受影响区域。不随手禁用导航、对话切换、无关编辑。
-- **界面生命周期 ≠ AI 任务生命周期**。对话组件卸载不得意外取消业务任务；区分停止订阅（disconnect）、取消模型生成（cancel task）、删除对话（delete data）。真正跨刷新/多端持续执行需要服务端可靠任务管理，前端 Store 不能独立保证。
-- **Re-render ≠ Remount ≠ Reload ≠ Refetch**。先定位再优化；不要默认 `React.memo` 或强制刷新是解决方案。
-- **数据的稳定身份**：列表以业务 ID 为 `key`；UI State、Server State、Task State 分离；避免旧请求覆盖新任务/新页面。
-- **输入法与滚动稳定**：组合输入阶段 Enter 不可误发；用户主动查看历史时流式输出不得抢回滚动位置；分屏折叠必须可以恢复。
-- **布局稳定**：长文不撑宽；容器有可收缩边界；传统滚动条出现时预留布局空间；高度增长可以合理滚动但不意外移动无关面板。
-- **标题层级保持克制**：避免 eyebrow、标题、副标题与辅助说明层层堆叠；只有当副标题补充了标题未表达的信息时才保留，避免重复释义或为填充版面硬加文案。详见 [visual-polish.md](references/visual-polish.md)。
-- **响应式并非浏览器 50% 缩放**：针对窗口与组件实际可用宽度设计降级（常驻侧栏→抽屉、两列→单列），不得无限压缩字体。
-- **交互语义优先于风格**：先看是否风险/撤销/输入草稿/内容长度，再选 Tooltip、Toast、Snackbar、Popconfirm、Modal、AlertDialog、Drawer、Bottom Sheet、Action Sheet。
-- **布尔设置必须用开关（Switch）**。可在当前界面直接开启或关闭的设置，必须用持续显示当前状态的开关。禁止用「开启 X／关闭 X」之类的普通动作按钮代替。详见 [组件选型](references/requirements-and-component-choice.md#布尔设置使用开关)。
-- **避免盲从视频参数**：surface 明度差、流式淡入 120ms、字重、动效曲线等均为参考起点，不是硬性标准；优先可读性、性能和 `prefers-reduced-motion`。
-- **异步加载与内容切换**：保留仍适用的旧内容；否则显示贴合布局的局部 skeleton。需要一致呈现的区域统一释放并克制地淡入；空态和错误也应结束等待，独立区域不必阻塞。快速请求避免闪烁，遵循 `prefers-reduced-motion`。条件与恢复路径见 [visual-polish.md](references/visual-polish.md)，设计依据见 [sources.md](references/sources.md)。
-- **不引入不必要依赖或大规模架构重写**；如确需新库/持久任务基础设施，说明引入理由与迁移成本。
-
-## 扩展：新视频与 desktop-agent-ui（按需启用）
-
-新视频中的 IME 防误发、流式历史阅读跟随、减少边框、同心圆角、可恢复分屏、长文件名后缀保留，见 [desktop-chat-microinteractions.md](references/desktop-chat-microinteractions.md)。
-
-Electron/Tauri 原生窗口、阴影裁切、可拖拽分栏完整状态机，以及可选多窗口同步，见 [desktop-resizable-and-shell.md](references/desktop-resizable-and-shell.md)。
-
-**复用前先核验作者技术主张**：500ms 拦截窗口、CSS 零 CPU、clip-audit `cut===0` 等都不可视为放之四海皆准的保证。详见 [ludi-review-and-safety-notes.md](references/ludi-review-and-safety-notes.md)。优先复用项目现成的 Resizable、ScrollArea、Dialog 等组件；不要为本扩展强加 Electron、Tauri 或新组件库。
-
-## 按任务加载 references
-
-| 需要解决的问题 | 仅读取必要文件 |
+| 要处理的场景 | 参考文档 |
 |---|---|
-| 需求含糊、布尔设置、选弹出组件、确认/撤销/表单误关 | [requirements-and-component-choice.md](references/requirements-and-component-choice.md) + [examples/undo-snackbar.tsx](examples/undo-snackbar.tsx) |
-| 视觉层级、标题/副标题密度、暗色字重、流式淡入、数字、动效、异步内容切换 | [visual-polish.md](references/visual-polish.md) |
-| 文本撑宽、本地化长译文、RTL/双向文本、滚动条挤压、多栏布局、侧栏、缩放 | [layout-and-responsive.md](references/layout-and-responsive.md) + [examples/workspace-layout.css](examples/workspace-layout.css) |
-| 桌面或移动端的点击死区、有效命中区、误触与移动端震动反馈 | [pointer-hit-targets.md](references/pointer-hit-targets.md) |
-| Reload / Remount / Re-render / Refetch、闪烁和丢状态 | [render-and-state-diagnostics.md](references/render-and-state-diagnostics.md) + [examples/react-stability.tsx](examples/react-stability.tsx) |
-| 生成期间能切换、后台任务不断、断线恢复、竞争条件 | [async-nonblocking-ux.md](references/async-nonblocking-ux.md) + [examples/task-manager.ts](examples/task-manager.ts) + [examples/task-ui.tsx](examples/task-ui.tsx) |
-| FastAPI / SSE 任务持久化/协议 | [backend-sse-contract.md](references/backend-sse-contract.md) |
-| 测试与验收 | [verification-matrix.md](references/verification-matrix.md) + [examples/playwright-stability.spec.ts](examples/playwright-stability.spec.ts) |
-| 新视频：中文选词、回底策略、边框与圆角、长文件名 | [desktop-chat-microinteractions.md](references/desktop-chat-microinteractions.md) + 对应 examples |
-| 分屏可恢复拖拽、透明桌面窗阴影、跨窗口同步 | [desktop-resizable-and-shell.md](references/desktop-resizable-and-shell.md) + [examples/resizable-workspace.tsx](examples/resizable-workspace.tsx) |
-| 作者源码审查与实现边界 | [ludi-review-and-safety-notes.md](references/ludi-review-and-safety-notes.md) |
-| 外部权威资料、视频来源及界限 | [sources.md](references/sources.md) |
-
-## 输出要点（按任务取用）
-
-- **场景/确认**：已知需求；必要的 1–3 个待确认问题（若无则无需询问）。
-- **现象与根因**：证据及置信度；先解释“为什么”。
-- **方案**：说明相关的组件、布局或状态调整；只有异步任务问题才使用复杂度 S/M/L。
-- **实施**：逐文件说明 + 有意义的差异。
-- **验收**：实测环境、通过与未测案例、可回退方案。
-
-## 最小禁忌清单
-
-禁止为了“防重入”锁整页；禁止用动态 `key={Date.now()}` 强制刷新；禁止把 `queryClient.invalidateQueries()` 无筛选地用于每个保存操作；禁止把“断开 SSE 客户端”误认为“后台任务已取消”；禁止把加载骨架屏替换所有可用旧内容；禁止 `overflow:hidden` 一刀切遮掉内容；禁止在页面宽度不足时直接把全站字号缩到不可读。
+| 导航、当前位置、局部视图切换、搜索与筛选、空状态 | [导航、搜索与空状态](references/navigation-search-and-empty-states.md) |
+| 表单校验、按钮与设置开关、弹窗与抽屉、确认与撤销、焦点管理 | [组件选型与交互](references/requirements-and-component-choice.md) |
+| 视觉层级与副标题、连续曲率圆角、边框与颜色、深浅主题、动效、加载占位与内容切换 | [视觉层级与反馈](references/visual-polish.md) |
+| 窄窗口、长文、缩放、滚动条、多栏与工具栏 | [布局与响应式](references/layout-and-responsive.md) |
+| 多语言界面、长译文、RTL 与双向文本 | [本地化文本与 RTL 布局](references/layout-and-responsive.md#本地化文本与-rtl-布局) |
+| 通用点击死区、命中范围、桌面鼠标与触控板 | [点击目标与死区](references/pointer-hit-targets.md) |
+| 移动端触屏、手势、底部面板、触觉反馈与弹簧动效 | [移动端交互与动效](references/mobile-touch-and-motion.md) |
+| 输入法组合输入（IME）、流式阅读位置、嵌套圆角、长文件名 | [桌面聊天交互](references/desktop-chat-microinteractions.md) |
+| 分栏拖拽和折叠、自适应输入框、桌面窗口裁切、多窗口同步 | [桌面窗口与分栏](references/desktop-resizable-and-shell.md) |
+| 页面闪白、重复请求、草稿或焦点丢失、渲染卡顿 | [渲染与状态诊断](references/render-and-state-diagnostics.md) |
+| 局部忙碌、进度与读屏通知、任务并发、切换对话、重连和取消 | [异步交互与任务](references/async-nonblocking-ux.md) |
+| 涉及前端交互的 SSE 契约、任务持久化与恢复 | [任务接口参考](references/backend-sse-contract.md) |
+| 列表、表格、图表、首次使用或权限请求 | [专门场景（只读相关小节）](references/specialized-page-patterns.md) |
+| 浏览器诊断、回归测试、可访问性验收 | [验证矩阵](references/verification-matrix.md) |
+| 核对外部实现的适用性、来源与授权 | [资料与致谢](references/sources.md) |

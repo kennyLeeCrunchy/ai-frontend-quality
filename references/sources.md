@@ -1,13 +1,15 @@
-# 来源、权威文档及适用界限
+# 资料、来源与致谢
 
-## 用户提供的视频（设计观点）
+## 设计参考
 
 1. Ludi《扒了大厂 AI 客户端源码，质感全靠这 5 招！》：surface 细微层次、暗色字体字重、流式文字淡入、数字/图标光学对齐、动作反馈。
-2. Ludi《弹窗家族》（2:44 录屏）：Bottom Sheet、Action Sheet、Snackbar、Alert Dialog 与移动端设计。
-3. Ludi《别再把弹出来的东西都叫弹窗了》（1:57 录屏）：Tooltip、Toast、Modal、Popconfirm、Drawer；避免草稿误关、可撤销优于无意义确认、危险按钮使用明确动词。
-4. Ludi《界面出海，按钮为什么总被外文撑爆？》（用户提供视频）：多语言文案长度差异、操作区弹性布局，以及阿拉伯语 RTL 页面方向适配。
+2. Ludi《弹窗家族》：Bottom Sheet、Action Sheet、Snackbar、Alert Dialog 与移动端设计。
+3. Ludi《别再把弹出来的东西都叫弹窗了》：Tooltip、Toast、Modal、Popconfirm、Drawer；避免草稿误关、可撤销优于无意义确认、危险按钮使用明确动词。
+4. Ludi《界面出海，按钮为什么总被外文撑爆？》：多语言文案长度差异、操作区弹性布局，以及阿拉伯语 RTL 页面方向适配。
 
-视频内容已经由用户提供的文件和上一轮总结整理；**本 Skill 不声称这些视频包含后端 taskId 设计、TanStack Query、SSE 断线恢复等工程实现**。后者是对后续讨论的补充方案。
+5. Ludi《大厂 UI 第二弹》：输入法防误发、流式阅读、边框与圆角、分栏和长文件名。
+
+任务 ID、缓存一致性与 SSE 恢复属于本 Skill 的工程补充。
 
 ## 权威技术资料（可在线查阅）
 
@@ -38,7 +40,7 @@
 - 部分复杂参考是架构示例而非可运行的完整服务；完整生产部署还需要 DB、鉴权、队列、重试、日志、监控和测试。
 - 代码中出现的 token、响应式断点和 UI 文字只是起点，应由真实设计系统、内容密度和目标设备验证。
 
-## 2026-10-23 增补：Ludi Desktop Agent UI
+## 开源项目与致谢
 
 - 原作者仓库： https://github.com/Ludi-Herry/desktop-agent-ui
 - 作者 Skill： https://github.com/Ludi-Herry/desktop-agent-ui/blob/main/SKILL.md
@@ -47,4 +49,4 @@
 - Motion & components： https://github.com/Ludi-Herry/desktop-agent-ui/blob/main/references/components-motion.md
 - MIT 许可： https://github.com/Ludi-Herry/desktop-agent-ui/blob/main/LICENSE
 
-本 Skill 从新视频及仓库吸收问题意识，examples 为独立实现，保留了对性能/IME/裁切零误差等主张的适用边界检查；不直接重分发作者脚本。参考 `ludi-review-and-safety-notes.md`。
+感谢 Ludi-Herry 分享桌面交互与工程实践。包内示例为独立实现。复用第三方技术方案或检测工具时，可查阅 [外部前端实现的技术核验](ludi-review-and-safety-notes.md)。

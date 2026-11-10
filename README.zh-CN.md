@@ -1,8 +1,18 @@
-# AI Frontend Quality Skill · v1.4.6
+# AI Frontend Quality Skill · v1.5.0
 
 [English](README.md) | **简体中文**
 
-适合 Codex / Claude Code / Cursor（支持 Agent Skills 的运行方式）在开发或审查 AI 客户端与 Web 工作台时使用。
+适合在支持 Agent Skills 的 Codex、Claude Code 或 Cursor 中使用，覆盖 Web、桌面和 AI 客户端的界面设计、实现与审查。
+
+## v1.5.0 按场景组织的前端指南
+
+主文件集中保留通用规则与场景导航。Agent 可以按任务找到对应做法、示例和验收项。
+
+- **通用交互**：补齐导航、搜索与筛选、空状态、表单纠错、按钮层级和焦点管理。可直接修改的布尔设置统一用 Switch。
+- **响应式与状态反馈**：多语言与 RTL 有独立入口。补齐窄窗工具栏、主题颜色、真实进度和读屏通知。
+- **桌面与移动端**：IME 规则适用于各语言的组合输入。移动端专属参考集中收录触控、手势、底部面板、触觉反馈和可中断的弹簧动效。
+- **视觉规则**：副标题只在补充信息时保留。补充连续曲率圆角的 Apple、Figma 与 Web 实现参考。
+- **改动范围与示例**：局部修改优先复用。需要重构时按需求决定保留与重做的范围，新功能受现有技术栈限制时可以提出迁移方案。短示例随规则阅读，长实现按需打开。
 
 ## 包内结构
 
@@ -12,10 +22,12 @@ ai-frontend-quality/
 ├── README.md                  # 安装与使用（英文）
 ├── README.zh-CN.md            # 安装与使用（中文）
 ├── references/
+│   ├── navigation-search-and-empty-states.md
 │   ├── requirements-and-component-choice.md
 │   ├── visual-polish.md
 │   ├── layout-and-responsive.md
 │   ├── pointer-hit-targets.md
+│   ├── mobile-touch-and-motion.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
 │   ├── backend-sse-contract.md
@@ -23,6 +35,7 @@ ai-frontend-quality/
 │   ├── desktop-chat-microinteractions.md
 │   ├── desktop-resizable-and-shell.md
 │   ├── ludi-review-and-safety-notes.md
+│   ├── specialized-page-patterns.md
 │   └── sources.md
 ├── examples/
 │   ├── workspace-layout.css
@@ -39,6 +52,8 @@ ai-frontend-quality/
 └── scripts/
     └── audit-ui.py
 ```
+
+从 [SKILL.md](SKILL.md) 的场景导航进入相应参考。短代码片段直接放在参考文档里，较长的实现由对应文档链接到 `examples/`。
 
 ## 首次安装与升级
 
@@ -72,7 +87,7 @@ ai-frontend-quality/
 - `scripts/audit-ui.py` 只是寻找可疑写法的静态扫描器，不能替代 DevTools/Profiler 的根因诊断。
 - Skill 本身只是行为指引，不会在代码或浏览器层面强制拦截开发行为。
 
-## v1.1 新增内容（作者新视频与开源 Skill）
+## v1.1 桌面聊天与窗口交互
 
 - IME 组字安全发送、正在输出时尊重滚动阅读意图。
 - 避免多重可见描边、同心圆角、文件名后缀始终可辨。
@@ -91,7 +106,7 @@ ai-frontend-quality/
 ## v1.4 新增内容（移动端点击区域）
 
 - 增加移动端适配参考：区分视觉范围和真实可点击范围，定位点击死区、透明层拦截与相邻控件误触。
-- 结合触控目标尺寸、滚动手势和键盘可达性检查；尺寸依据与视频观点分别标注来源。
+- 结合触控目标尺寸、滚动手势和键盘可达性检查，并区分各平台的尺寸依据。
 
 ## v1.4.1 补充（桌面端点击区域）
 
