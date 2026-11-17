@@ -2,7 +2,7 @@
 name: ai-frontend-quality
 description: 设计、实现或审查 Web 与桌面客户端的界面和交互。适用于组件选型、页面导航、视觉层级、响应式、表单与可访问性，也适用于前端渲染、异步任务和 AI 聊天流。纯后端任务不适用。
 metadata:
-  version: '1.5.0'
+  version: '1.5.1'
 ---
 # AI Frontend Quality
 
@@ -39,7 +39,7 @@ metadata:
 | 分栏拖拽和折叠、自适应输入框、桌面窗口裁切、多窗口同步 | [桌面窗口与分栏](references/desktop-resizable-and-shell.md) |
 | 页面闪白、重复请求、草稿或焦点丢失、渲染卡顿 | [渲染与状态诊断](references/render-and-state-diagnostics.md) |
 | 局部忙碌、进度与读屏通知、任务并发、切换对话、重连和取消 | [异步交互与任务](references/async-nonblocking-ux.md) |
-| 涉及前端交互的 SSE 契约、任务持久化与恢复 | [任务接口参考](references/backend-sse-contract.md) |
+| 涉及后端的交互契约：任务恢复、附件、保存冲突、登录权限与安全渲染 | [前后端交互契约导航](references/frontend-backend-contracts.md) |
 | 列表、表格、图表、首次使用或权限请求 | [专门场景（只读相关小节）](references/specialized-page-patterns.md) |
 | 浏览器诊断、回归测试、可访问性验收 | [验证矩阵](references/verification-matrix.md) |
 | 核对外部实现的适用性、来源与授权 | [资料与致谢](references/sources.md) |

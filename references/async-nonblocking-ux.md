@@ -1,5 +1,7 @@
 # Async UX & Non-blocking UI：AI 工作台任务并发
 
+涉及任务恢复接口、附件处理或写操作重试时，从 [前后端交互契约导航](frontend-backend-contracts.md) 读取相关参考。
+
 ## 总原则
 
 `busy(task-123)` 不应该转换为 `disabled(App)`。按**操作是否共享资源、有无真实依赖/冲突**决定禁用范围。

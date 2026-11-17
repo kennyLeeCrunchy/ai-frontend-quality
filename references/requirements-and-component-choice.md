@@ -51,6 +51,8 @@
 
 参考 [Apple HIG · Settings](https://developer.apple.com/design/human-interface-guidelines/settings)。
 
+自动保存、乐观更新或多窗口编辑涉及版本冲突时，查阅 [保存与冲突](save-conflict-contract.md)。
+
 ## 焦点与替代操作
 
 - 模态打开后将焦点移入并限制在对话框内，关闭后还给触发控件。若原控件已删除或隐藏，将焦点移到逻辑上的后续位置，例如同列表的下一项。非模态面板保留页面原有的键盘操作路径。

@@ -45,6 +45,8 @@
 
 ## 5. 长文件名：扩展名要保留
 
+涉及附件上传、解析和可用状态时，查阅 [文件上传与附件](file-upload-contract.md)。
+
 上传列表中 `季度经营分析汇总...pdf` 比 `季度经营分析...` 更有意义。
 
 - 将文件 baseName 和扩展名分离渲染；让 baseName `min-width:0; text-overflow:ellipsis`，扩展名 `flex:none`。

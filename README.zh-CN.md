@@ -1,8 +1,14 @@
-# AI Frontend Quality Skill · v1.5.0
+# AI Frontend Quality Skill · v1.5.1
 
 [English](README.md) | **简体中文**
 
 适合在支持 Agent Skills 的 Codex、Claude Code 或 Cursor 中使用，覆盖 Web、桌面和 AI 客户端的界面设计、实现与审查。
+
+## v1.5.1 前后端交互契约
+
+- 新增统一导航，集中查找依赖后端状态和接口的前端交互规则。
+- 补齐附件处理、自动保存与冲突、登录过期与权限变化、富文本安全渲染四类参考。
+- 连接已有的任务恢复、缓存更新与多窗口规则，并为各场景补充失败、竞速和恢复验收。
 
 ## v1.5.0 按场景组织的前端指南
 
@@ -30,6 +36,11 @@ ai-frontend-quality/
 │   ├── mobile-touch-and-motion.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
+│   ├── frontend-backend-contracts.md
+│   ├── file-upload-contract.md
+│   ├── save-conflict-contract.md
+│   ├── session-permission-contract.md
+│   ├── safe-content-rendering.md
 │   ├── backend-sse-contract.md
 │   ├── verification-matrix.md
 │   ├── desktop-chat-microinteractions.md

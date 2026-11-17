@@ -6,7 +6,7 @@
 
 An open-source Agent Skill for designing, reviewing, and improving web and AI application frontends. It helps coding agents diagnose UI problems, choose appropriate interaction patterns, and implement changes without introducing unnecessary complexity.
 
-**Version:** 1.5.0 · **License:** MIT
+**Version:** 1.5.1 · **License:** MIT
 
 Designed for **Codex**, **Claude Code**, and **Cursor** when they support Agent Skills or an equivalent way to load local instructions. Exact installation and activation behavior depends on your agent version and configuration.
 
@@ -56,6 +56,11 @@ ai-frontend-quality/
 │   ├── mobile-touch-and-motion.md
 │   ├── render-and-state-diagnostics.md
 │   ├── async-nonblocking-ux.md
+│   ├── frontend-backend-contracts.md
+│   ├── file-upload-contract.md
+│   ├── save-conflict-contract.md
+│   ├── session-permission-contract.md
+│   ├── safe-content-rendering.md
 │   ├── backend-sse-contract.md
 │   ├── verification-matrix.md
 │   ├── desktop-chat-microinteractions.md
@@ -143,6 +148,12 @@ You can attach the ZIP to a coding agent and use this prompt:
 - The package discusses the open-source [Ludi-Herry/desktop-agent-ui](https://github.com/Ludi-Herry/desktop-agent-ui) work and its MIT license. **It does not bundle the author's original scripts.** If using that skill separately, avoid imposing two overlapping rule sets on the same task without reconciling them.
 
 ## Release notes
+
+**v1.5.1 — Frontend–backend interaction contracts**
+
+- Add a single navigation entry for frontend behavior that depends on backend state and interfaces.
+- Cover attachment processing, save conflicts, session expiry and permission changes, and safe rich-content rendering.
+- Connect these references to existing task recovery, cache updates, and multi-window guidance, with focused failure and recovery checks.
 
 **v1.5.0 — Frontend guidance by scenario**
 
